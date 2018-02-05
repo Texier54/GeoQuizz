@@ -32,7 +32,7 @@ services:
       - ./api:/var/www/api
       - ./src:/var/www/src
     networks:
-      - lbs_network
+      - geoquizz_network
     links :
       - mysql:db
 
