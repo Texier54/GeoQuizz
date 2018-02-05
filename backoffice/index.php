@@ -179,12 +179,6 @@ $app->post('/register', function ($request, $response, $args) {
 
 });
 
-$app->get('/[{route}]', function ($request, $response, $args) {
-
-    return $this->view->render($response, 'connexion.html.twig', []);
-
-});
-
 
 // Run app
 $app->run();
