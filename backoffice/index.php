@@ -51,7 +51,7 @@ $container['csrf'] = function ($c) {
 
 $app->get('/', function ($request, $response, $args) {
 
-    if($_SESSION['pseudo'])
+    if(isset($_SESSION['pseudo']))
         $session = true;
     else
         $session = false;
@@ -72,11 +72,21 @@ $app->get('/', function ($request, $response, $args) {
 $app->get('/connexion', function ($request, $response, $args) {
 
     if(isset($_SESSION['pseudo']))
-        return $response->withRedirect($this->router->pathFor('liste'), 301);
+        return $response->withRedirect($this->router->pathFor('home'), 301);
 
     return $this->view->render($response, 'connexion.html.twig', []);
 
 })->setName('connexion');
+
+
+$app->get('/register', function ($request, $response, $args) {
+
+    if(isset($_SESSION['pseudo']))
+        return $response->withRedirect($this->router->pathFor('home'), 301);
+
+    return $this->view->render($response, 'register.html.twig', []);
+
+})->setName('register');
 
 
 
@@ -87,7 +97,7 @@ $app->get('/deconnexion', function ($request, $response, $args) {
 
     session_destroy();
 
-    return $response->withRedirect($this->router->pathFor('liste'), 301);
+    return $response->withRedirect($this->router->pathFor('home'), 301);
 
 })->setName('deconnexion');
 
@@ -98,7 +108,7 @@ $app->get('/deconnexion', function ($request, $response, $args) {
 $app->post('/connexion', function ($request, $response, $args) {
 
     $parsedBody = $request->getParsedBody();
-    $arr = new \lbs\common\models\User();
+    $arr = new \geoquizz\common\models\User();
             
     if(isset($parsedBody['pseudo']) && isset($parsedBody['password']))
     {
@@ -112,26 +122,68 @@ $app->post('/connexion', function ($request, $response, $args) {
 
                 $_SESSION['pseudo'] = $user->pseudo;
 
-                return $response->withRedirect($this->router->pathFor('liste'), 301);
+                return $response->withRedirect($this->router->pathFor('home'), 301);
             }
             else
             {
-                return $this->view->render($response, 'connexion.html.twig', []);
+                return $response->withRedirect($this->router->pathFor('connexion'), 301);
             }  
         } catch(\Exception $e) {
-            return $this->view->render($response, 'connexion.html.twig', []);
+            return $response->withRedirect($this->router->pathFor('connexion'), 301);
         }
 
 
     }
     else 
     {
-        return $this->view->render($response, 'connexion.html.twig', []);
+        return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
 
 });
 
+$app->post('/register', function ($request, $response, $args) {
 
+    $parsedBody = $request->getParsedBody();
+    $user = new \geoquizz\common\models\User();
+
+    $existsPseudo = $user->where('pseudo', '=', $parsedBody['pseudo'])->first();
+    $existsMail = $user->where('mail', '=', $parsedBody['email'])->first();
+            
+    if( isset($parsedBody['pseudo']) && isset($parsedBody['password']) &&
+        isset($parsedBody['nom']) && isset($parsedBody['prenom']) && isset($parsedBody['email']) &&
+        !$existsPseudo && !$existsMail
+    )
+    {
+
+        echo password_hash($parsedBody['password'], PASSWORD_DEFAULT);
+		$user->pseudo = $parsedBody['pseudo'];
+		$user->password = password_hash($parsedBody['password'], PASSWORD_DEFAULT);
+		$user->nom = $parsedBody['nom'];
+		$user->prenom = $parsedBody['prenom'];
+		$user->mail = $parsedBody['email'];
+
+		try {
+			$user->save();
+		} catch(\Exception $e) {
+			echo $e->getmessage();
+		}
+        
+
+        return $response->withRedirect($this->router->pathFor('connexion'), 301);
+
+    }
+    else 
+    {
+        return $this->view->render($response, 'register.html.twig', []);
+    }
+
+});
+
+$app->get('/[{route}]', function ($request, $response, $args) {
+
+    return $this->view->render($response, 'connexion.html.twig', []);
+
+});
 
 
 // Run app
