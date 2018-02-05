@@ -49,6 +49,20 @@ function checkToken ( Request $rq, Response $rs, callable $next )
 
 
 
+$app->get('/series[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->getSeries($req, $resp, $args);
+    }
+);
+
+
+$app->get('/series/{id}', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->getSeriesID($req, $resp, $args);
+    }
+)->setName('serieID');
+
+
 /* Validator */
 $validatorsCreatePartie = [
     'pseudo' => v::notEmpty(),

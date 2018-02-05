@@ -13,6 +13,58 @@
 			$this->container = $c;
 		}
 
+		public function getSeries($req, $resp, $args) {
+
+			$series = new \geoquizz\common\models\Serie();
+			$series = $series->get();
+
+			$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
+
+			$resp= $resp->withStatus(201);
+
+			$tab = $series;
+
+			$resp->getBody()->write(json_encode($tab));
+			return $resp;		
+
+		}
+
+
+		public function getSeriesID($req, $resp, $args) {
+
+			try{
+
+				$series = new \geoquizz\common\models\Serie();
+				$series = $series->where('id', '=', $args['id'])->firstOrFail();
+
+				$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
+
+				$resp= $resp->withStatus(201);
+
+				$tab = $series;
+
+				$resp->getBody()->write(json_encode($tab));
+				return $resp;	
+
+			} catch(\Exception $e) {
+
+
+				$resp= $resp->withStatus(400);
+
+				$url = $this->container['router']->pathFor('serieID', [ 'id' => $args['id'] ]);
+
+				$temp = array("type" => "error", "error" => '404', "message" => "ressource non disponible : ".$url);
+				
+				$resp->getBody()->write(json_encode($temp));
+
+				return $resp;	
+			}
+
+
+
+	
+
+		}
 
 
 		public function createPartie($req, $resp, $args) {
