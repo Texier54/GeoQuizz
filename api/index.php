@@ -11,7 +11,7 @@ $conf = ['settings' => ['displayErrorDetails' => true]];
 $app = new \Slim\App($conf);
 
 //Eloquent ORM settings
-require_once __DIR__.'/../src/config/db.php';
+require_once 'db.php';
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Respect\Validation\Validator as v;
@@ -50,17 +50,16 @@ function checkToken ( Request $rq, Response $rs, callable $next )
 
 
 /* Validator */
-$validatorsCreateCart = [
-    'nom' => v::notEmpty(),
-    'password' =>v::notEmpty(),
+$validatorsCreatePartie = [
+    'pseudo' => v::notEmpty(),
 ];
 
 
-$app->post('/cartes[/]', function (Request $req, Response $resp, $args) {
-    $c = new geoquizz\api\control\AuthController($this);
-    return $c->createCard($req, $resp, $args);
+$app->post('/partie[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->createPartie($req, $resp, $args);
     }
-)->add(new Validation( $validatorsCreateCart));
+)->add(new Validation( $validatorsCreatePartie));
 
 
 $app->run();
