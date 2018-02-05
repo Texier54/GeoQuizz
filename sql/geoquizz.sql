@@ -29,6 +29,7 @@ CREATE TABLE photo(
         url         Varchar (255) ,
         longitude   Varchar (255) ,
         latitude    Varchar (25) ,
+        id_serie Int ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
@@ -43,8 +44,6 @@ CREATE TABLE serie(
         longitude Varchar (25) ,
         latitude  Varchar (25) ,
         zoom      Varchar (25) ,
-        id_partie Int ,
-        id_photo  Int ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
@@ -60,6 +59,7 @@ CREATE TABLE partie(
         status    Varchar (25) ,
         score     Varchar (25) ,
         joueur    Varchar (255) ,
+        id_serie Int ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
