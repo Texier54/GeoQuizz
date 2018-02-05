@@ -7,7 +7,7 @@
 
       <!-- Jumbotron Header -->
       <header class="jumbotron my-4">
-        <h1 class="display-3">Liste Sandwichs</h1>
+        <h1 class="display-3">Serie</h1>
         <p class="lead">Desc</p>
       </header>
 
@@ -22,7 +22,7 @@
 	              <p class="card-text">{{ cat.type_pain }}</p>
 	            </div>
 	            <div class="card-footer">
-	              <a href="{{ path_for( 'categorie', { 'id': cat.id }) }}" class="btn btn-primary">Consulter</a>
+	              <a href="{{ path_for( 'home', { 'id': cat.id }) }}" class="btn btn-primary">Consulter</a>
 	            </div>
 	          </div>
 	        </div>

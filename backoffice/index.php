@@ -56,7 +56,7 @@ $app->get('/', function ($request, $response, $args) {
     else
         $session = false;
 
-    $arr = new \geoquizz\common\models\Categorie();
+    $arr = new \geoquizz\common\models\Serie();
 
     $requete = $arr->get();
 
@@ -64,7 +64,7 @@ $app->get('/', function ($request, $response, $args) {
         'data' => $requete,
         'session' => $session,
     ]);
-})->setName('liste');
+})->setName('home');
 
 
 
