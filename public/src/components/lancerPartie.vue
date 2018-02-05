@@ -11,7 +11,7 @@
         <p class="panel-heading">
 
           <div class="navbar-item">
-            <router-link class="navbar-item" to="/members">Membres</router-link>
+            <router-link class="navbar-item" to="/partie">Lancer partie</router-link>
           </div>
 
         </p>
