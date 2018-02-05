@@ -12,8 +12,8 @@ CREATE TABLE utilisateur(
         nom      Varchar (50) ,
         prenom   Varchar (50) ,
         mail     Varchar (50) ,
-        password Varchar (25) ,
-        admin    Bool ,
+        pseudo   Varchar (50) ,
+        password Varchar (255) ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
