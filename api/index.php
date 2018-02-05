@@ -48,6 +48,21 @@ function checkToken ( Request $rq, Response $rs, callable $next )
 };
 
 
+$app->add(function ($req, $res, $next) {
+    $response = $next($req, $res);
+    return $response
+            ->withHeader('Access-Control-Allow-Origin', $req->getHeader('Origin')[0])
+            ->withHeader('Access-Control-Allow-Headers', 'X-Requested-With, Content-Type, Accept, Origin, Authorization')
+            ->withHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+});
+
+
+$app->options('/{routes:.+}', function ($request, $response, $args) {
+    return $response;
+});
+
+
+
 
 $app->get('/series[/]', function (Request $req, Response $resp, $args) {
     $c = new geoquizz\api\control\Controller($this);

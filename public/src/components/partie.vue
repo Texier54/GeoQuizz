@@ -2,16 +2,18 @@
 
   <div style="height: 100%; width: 100%">
 
+
+
     <div id="map" style="height: 100%; width: 80%; display:inline-block;">
-      <v-map :minZoom="16" :maxZoom="16" :noMoveStart="true" :zoom=16 :center="[48.692054, 6.184417]">
-        <v-tilelayer url="http://{s}.tile.osm.org/{z}/{x}/{y}.png"></v-tilelayer>
-        <v-marker :lat-lng="[48.692054, 6.184417]"></v-marker>
-      </v-map>
     </div>
 
-    <img src="http://www.lorrainemag.com/wp-content/uploads/2015/12/Place_Stanislas_crepuscule_ville-de-Nancy-Copie-520x348.jpg" style="width: 19%; display:inline-block;">
-    {{ test }}
+    <button style="display:inline-block;" @click="suivant">Suivant</button>
+
     {{ val }}
+    <img :src="img" style="width: 19%; display:inline-block;">
+
+    
+    
   </div>
 
 
@@ -26,12 +28,39 @@ export default {
   components: {},
   data () {
     return {
-      test: 'qzfqzfqzf',
+      liste: '',
       val: '',
+      img: '',
+      nombre: 0,
+    }
+  },
+
+  methods : {
+    suivant() {
+      this.nombre = this.nombre+1;
+      this.img = this.liste['image'][this.nombre]['url'];
     }
   },
 
   mounted() {
+
+
+    window.axios.post('partie',{
+
+      pseudo : 'zf'
+
+    }).then((response) => {
+
+      this.liste = response.data;
+      //console.log(this.liste['image'][0]);
+      this.img = this.liste['image'][0]['url'];
+
+    }).catch((error) => {
+
+      console.log(error);
+
+    });
+
 
 
     function deg2rad(x){
@@ -53,28 +82,37 @@ export default {
     }
 
 
-    var test;
+    var temp;
+
+    function precisionRound(number, precision) {
+  var factor = Math.pow(10, precision);
+  return Math.round(number * factor) / factor;
+}
 
     window.bus.$on('updateCoord',() => {
-      console.log(test);
-      this.test = get_distance_m(test.lat, test.lng ,48.692054, 6.184417);
+      this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1)*0.001+'km';
     });
 
 
     
 
     var map = L.map('map', {
-      center: [48.69, 6.18],
-      zoom: 13,
-      zoomControl: false
+        center: [48.692054, 6.184417],
+        zoom: 16,
+
     });
+
+    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+        minZoom: 1,
+        maxZoom: 16
+    }).addTo(map);
+
 
     map.on('click', function(ev) {
-      alert(ev.latlng);
-      test = ev.latlng;
+      temp = ev.latlng;
       window.bus.$emit('updateCoord');
     });
-
 
   }
 }

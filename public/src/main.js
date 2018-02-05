@@ -13,11 +13,9 @@ Vue.component('v-marker', Vue2Leaflet.Marker);
 
 
 window.axios = axios.create({
-  baseURL: 'api.geoquizz.local:10080',
-  params : {
-  	token : false
-  },
-  headers: { Authorization: 'Token token=ad5b154ecef64f1b88b65873b3f336e2' } //a verifier
+  baseURL: 'http://api.geoquizz.local:10080/',
+
+  //headers: { Authorization: 'Token token=ad5b154ecef64f1b88b65873b3f336e2' } //a verifier
 });
 
 

@@ -91,7 +91,7 @@
 				$partie->nb_photos = 10;
 
 				$photo = new \geoquizz\common\models\Photo();
-				$photo = $photo->select('id', 'longitude', 'latitude')->get();
+				$photo = $photo->select('id', 'longitude', 'latitude', 'url')->get();
 
 				try {
 					$partie->save();
@@ -105,7 +105,7 @@
 
 				//$resp = $resp->withHeader('Location', $this->container['router']->pathFor('comid', ['id' => $com->id] ) );
 
-				$tab = ['token' => $partie->token, 'image' => [ $photo ]];
+				$tab = ['token' => $partie->token, 'image' => $photo ];
 
 				$resp->getBody()->write(json_encode($tab));
 				return $resp;
