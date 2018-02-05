@@ -11,7 +11,7 @@ $conf = ['settings' => ['displayErrorDetails' => true]];
 $app = new \Slim\App($conf);
 
 //Eloquent ORM settings
-require_once __DIR__.'/../src/config/db.php';
+require_once __DIR__.'/db.php';
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Respect\Validation\Validator as v;
