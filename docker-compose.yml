@@ -1,15 +1,15 @@
 #
-# docker-compose file pour le déploiement initial de l'application lbs
+# docker-compose file pour le déploiement initial de l'application geoquizz
 # Documentation complète : https://bitbucket.org/canals5/docker-things
 #
 # ajouter les vhosts des services web dans le fichier /etc/vhosts
 # de la machine hôte :
 # exemple pour le service api.public :
-# 127.0.0.1   api.lbs.local
-# pour accéder à ce service : https://api.lbs.local:10443
-#                      ou   :  http://api.lbs.local:10080
-# accès au service adminer : http://localhost:8080
-# accès au service mysql depuis le container api.public : utiliser le hostname "db"
+# 127.0.0.1   api.geoquizz.local
+# pour accéder à ce service : https://api.geoquizz.local:10443
+#                      ou   :  http://api.geoquizz.local:10080
+# accès au service adminer : http://localhost:8090
+# accès au service mysql depuis le container api.public : utiliser le hostname "geoquizz"
 
 version: "2"
 networks:
@@ -35,6 +35,30 @@ services:
       - geoquizz_network
     links :
       - mysql:db
+
+#############################
+#     Backend du projet     #
+#############################
+
+  api.backoffice:
+    image: canals/php
+    container_name: backoffice.local
+    environment:
+      - VHOST_HOSTNAME=backoffice.local
+      - VHOST_DOCROOT=/var/www/backoffice
+      - http_proxy=http://www-cache.iutnc.univ-lorraine.fr:3128/
+      - https_proxy=http://www-cache.iutnc.univ-lorraine.fr:3128/
+    ports:
+      - "10081:80"
+      - "10444:443"
+    volumes :
+      - ./backoffice:/var/www/backoffice
+      - ./src:/var/www/src
+    networks:
+      - geoquizz_network
+    links :
+      - mysql:db
+      - api.public:api.public
 
 #############################
 # mysql + adminer / can be replaced by mariadb

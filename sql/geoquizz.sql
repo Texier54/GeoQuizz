@@ -57,7 +57,7 @@ CREATE TABLE partie(
         id        int (11) Auto_increment  NOT NULL ,
         token     Varchar (255) ,
         nb_photos Int ,
-        stauts    Varchar (25) ,
+        status    Varchar (25) ,
         score     Varchar (25) ,
         joueur    Varchar (255) ,
         PRIMARY KEY (id )
