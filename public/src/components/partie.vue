@@ -21,12 +21,15 @@
         <div class="column is-3">
 
 
-          <img :src="img" v-show="photo">
+          <img class="img" :src="img" v-show="photo">
 
-          <button class="button is-success" v-show="btn_val" @click="valider">Valider</button>
-          <button class="button is-info" v-show="btn_suiv" @click="suivant">Suivant</button>
+          <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
+          <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
 
-          <p>Score : {{ score }}</p>
+          <div class="points">
+            <p class="score">Score : {{ score }}</p>
+            <p class="ptsgagne">+{{ newscore }}</p>
+          </div>
 
         </div>
 
@@ -55,6 +58,7 @@ export default {
       btn_suiv: false,
       btn_val:false,
       score: 0,
+      newscore: 0,
       token: '',
       marker: '',
       markerResult: '',
@@ -110,12 +114,10 @@ export default {
   },
 
   mounted() {
-
-
+    
     window.axios.post('partie',{
 
-      pseudo : 'mabite'
-      //pseudo : prompt('Pseudo :')
+      pseudo : this.$route.params.pseudo
 
     }).then((response) => {
 
@@ -123,6 +125,28 @@ export default {
       //console.log(this.liste['image'][0]);
       this.img = this.liste['image'][0]['url'];
       this.token = this.liste['token'];
+      let lat = this.liste['serie']['latitude'];
+      let lng = this.liste['serie']['longitude'];
+
+      console.log(this.liste['serie']['latitude']);
+
+      var map = L.map('map', {
+          center: [lat, lng],
+          zoom: 16,
+
+      });
+
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          minZoom: 1,
+          maxZoom: 16
+      }).addTo(map);
+
+      map.on('click', function(ev) {
+        temp = ev.latlng;
+        window.bus.$emit('updateCoord');
+      });
+
 
     }).catch((error) => {
 
@@ -194,45 +218,59 @@ export default {
       }
       else
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
-    });  
-
-    var map = L.map('map', {
-        center: [48.692054, 6.184417],
-        zoom: 16,
-
-    });
-
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-        minZoom: 1,
-        maxZoom: 16
-    }).addTo(map);
-
-
-
-
-    map.on('click', function(ev) {
-      temp = ev.latlng;
-      window.bus.$emit('updateCoord');
     });
 
   }
 }
 </script>
 
-<style>
+<style scoped>
+
 .container {
   padding-top: 10px;
 }
+
 body {
   background-color: #F2F6FA;
-   margin: 0px;
-
-   padding: 0px;
-
-   outline: 0px;
-   height: 100%;
-   width: 100%;
-   position: absolute;
+  margin: 0px;
+  padding: 0px;
+  outline: 0px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
+
+.btn{
+  font-weight: bold;
+  -webkit-transition-property: color;
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-property: color;
+  -moz-transition-duration: 0.5s;
+  transition-property: color;
+  transition-duration: 0.5s;
+}
+
+.btn:hover{
+  color: #363636;
+
+}
+
+.img{
+  border-radius: 5px;
+}
+
+.points{
+  margin-top: 20px;
+  font-weight: bold;
+  font-size: 30px;
+}
+
+.score{
+  border: solid #363636 2px;
+  border-radius: 10px;
+  padding-left: 5px;
+}
+
+
+
 </style>

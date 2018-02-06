@@ -13,7 +13,8 @@ export default new Router({
     },
     {
       path: '/partie',
-      component: partie
+      component: partie,
+      name: 'partie',
     },
     { path: '*', component: lancerPartie}
   ]

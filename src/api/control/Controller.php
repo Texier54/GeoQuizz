@@ -2,7 +2,16 @@
 
 	namespace geoquizz\api\control;
 
+	use \Psr\Http\Message\ServerRequestInterface as Request;
+	use \Psr\Http\Message\ResponseInterface as Response;
+	use illuminate\database\Eloquent\ModelNotFoundException as ModelNotFoundException;
+	
 	use Ramsey\Uuid\Uuid;
+
+	use \geoquizz\common\models\Serie as serie;
+	use \geoquizz\common\models\Partie as partie;
+	use \geoquizz\common\models\Photo as photo;
+	use \geoquizz\common\models\User as user;
 
 	class Controller {
 
@@ -15,7 +24,7 @@
 
 		public function getSeries($req, $resp, $args) {
 
-			$series = new \geoquizz\common\models\Serie();
+			$series = new serie();
 			$series = $series->get();
 
 			$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
@@ -34,7 +43,7 @@
 
 			try{
 
-				$series = new \geoquizz\common\models\Serie();
+				$series = new serie();
 				$series = $series->where('id', '=', $args['id'])->firstOrFail();
 
 				$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
@@ -79,15 +88,18 @@
 
 				$parsedBody = $req->getParsedBody();
 
-				$partie = new \geoquizz\common\models\Partie();
+				$partie = new partie();
 				$partie->token = Uuid::uuid1();
 				$partie->joueur = $parsedBody['pseudo'];
 				$partie->status = 1;
 				$partie->score = 0;
 				$partie->nb_photos = 10;
 
-				$photo = new \geoquizz\common\models\Photo();
-				$photo = $photo->select('id', 'longitude', 'latitude', 'url')->get();
+				$photo = new photo();
+				$photo = $photo->where('id_serie', '=', 1)->select('id', 'longitude', 'latitude', 'url')->get();
+
+				$serie = new serie();
+				$serie = $serie->where('id', '=', 1)->first();
 
 				try {
 					$partie->save();
@@ -99,9 +111,7 @@
 
 				$resp= $resp->withStatus(201);
 
-				//$resp = $resp->withHeader('Location', $this->container['router']->pathFor('comid', ['id' => $com->id] ) );
-
-				$tab = ['token' => $partie->token, 'image' => $photo ];
+				$tab = ['token' => $partie->token, 'image' => $photo, 'serie' => $serie ];
 
 				$resp->getBody()->write(json_encode($tab));
 				return $resp;
@@ -125,7 +135,7 @@
 
 				$parsedBody = $req->getParsedBody();
 
-				$partie = new \geoquizz\common\models\Partie();
+				$partie = new partie();
 				$partie = $partie->where('token', '=', $parsedBody['token'])->first();
 				$partie->status = 2;
 				$partie->score = $parsedBody['score'];
@@ -139,8 +149,6 @@
 				$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
 
 				$resp= $resp->withStatus(201);
-
-				//$resp = $resp->withHeader('Location', $this->container['router']->pathFor('comid', ['id' => $com->id] ) );
 
 				$tab = ['token' => $partie->token];
 
@@ -167,7 +175,7 @@
 
 				$parsedBody = $req->getParsedBody();
 
-				$user = new \geoquizz\common\models\User();
+				$user = new user();
 				$user->nom = $parsedBody['nom'];
 				$user->prenom = $parsedBody['prenom'];
 				$user->mail = $parsedBody['mail'];
@@ -184,9 +192,6 @@
 
 				$resp= $resp->withStatus(201);
 
-				//$resp = $resp->withHeader('Location', $this->container['router']->pathFor('comid', ['id' => $com->id] ) );
-				//$tab = ['token' => $user->token, 'image' => $photo ];
-
 				$resp->getBody()->write(json_encode($user));
 				return $resp;
 
@@ -195,7 +200,7 @@
 
 		public function getUsers($req, $resp, $args) {
 
-			$users = new \geoquizz\common\models\User();
+			$users = new user();
 			$users = $users->get();
 
 			$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
@@ -224,7 +229,7 @@
 
 				$parsedBody = $req->getParsedBody();
 
-				$photo = new \geoquizz\common\models\Photo();
+				$photo = new photo();
 				$photo->nom = $parsedBody['nom'];
 				$photo->description = $parsedBody['description'];
 				$photo->url = $parsedBody['url'];
@@ -242,9 +247,6 @@
 
 				$resp= $resp->withStatus(201);
 
-				//$resp = $resp->withHeader('Location', $this->container['router']->pathFor('comid', ['id' => $com->id] ) );
-				//$tab = ['token' => $user->token, 'image' => $photo ];
-
 				$resp->getBody()->write(json_encode($photo));
 				return $resp;
 
@@ -258,7 +260,7 @@
 				
 				$resp = $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
 
-				$photo = \geoquizz\common\models\Photo::where('id', '=', $id)->firstOrFail();
+				$photo = photo::where('id', '=', $id)->firstOrFail();
 
 				$resp->getBody()->write(json_encode($photo));
 
@@ -280,7 +282,7 @@
 
 		public function getPhotos($req, $resp, $args) {
 
-			$photos = new \geoquizz\common\models\Photo();
+			$photos = new photo();
 			$photos = $photos->get();
 
 			$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
