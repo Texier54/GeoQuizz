@@ -1,19 +1,27 @@
 <template>
 
-  <div style="height: 100%; width: 100%">
 
+  <div>
 
+    <nav-bar></nav-bar>
 
-    <div id="map" style="height: 100%; width: 80%; float:left;">
+    <div class="columns" style="height: 100%;">
+
+      <div style="height: 100%; width: 100%">
+      <div id="map" style="height: 100%; width: 100%" class="column is-three-fifths">
+      </div>
     </div>
 
-    <button v-show="btn_val" style="width: 19%; margin-top: 0px; display:inline-block;" @click="valider">Valider</button>
-    <button v-show="btn_suiv" style="width: 19%; margin-top: 0px; display:inline-block;" @click="suivant">Suivant</button>
+      <div class="column">
+        <img :src="img" v-show="photo" style="width:100%; height: 100%;">
+      </div>
 
-    <p>Score : {{ score }}</p>
-    <img :src="img" v-show="photo" style="width: 19%; display:inline-block;">
+      <button v-show="btn_val" @click="valider">Valider</button>
+      <button v-show="btn_suiv" @click="suivant">Suivant</button>
 
-    
+      <p>Score : {{ score }}</p>
+
+    </div>
     
   </div>
 
@@ -22,11 +30,11 @@
 
 <script>
 
-
+import NavBar from './navBar.vue'
 
 export default {
   name: 'partie',
-  components: {},
+  components: {NavBar},
   data () {
     return {
       liste: '',
@@ -95,7 +103,8 @@ export default {
 
     window.axios.post('partie',{
 
-      pseudo : prompt('Pseudo :')
+      pseudo : 'mabite'
+      //pseudo : prompt('Pseudo :')
 
     }).then((response) => {
 
