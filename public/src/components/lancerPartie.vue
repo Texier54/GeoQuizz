@@ -6,20 +6,24 @@
 
     <section class="section coop-accueil">
 
-      <div class="panel">
+      <nav class="panel">
 
         <p class="panel-heading">
-
-          <div class="navbar-item">
-            <a class="button" @click="lancerPartie">Lancer partie</a>
-          </div>
-
+          Bienvenue sur GeoQuizz !!!!
         </p>
 
-      </div>
+        <div class="panel-block">
+          <p class="control has-icons-left">
+            Pour lancer une partie, cliquez sur le bouton "Lancer partie" #con
+          </p>
+        </div>
+
+          <div class="navbar-item">
+            <button class="button is-primary" @click="lancerPartie">Lancer partie</button>
+          </div>
+
+      </nav>
     </section>
-
-
 
     <div class="modal" v-bind:class="{ 'is-active': lancer }">
       <div class="modal-background" @click="fermer"></div>
@@ -68,3 +72,8 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+
+</style>
