@@ -10,8 +10,8 @@
     <button v-show="btn_val" style="width: 19%; margin-top: 0px; display:inline-block;" @click="valider">Valider</button>
     <button v-show="btn_suiv" style="width: 19%; margin-top: 0px; display:inline-block;" @click="suivant">Suivant</button>
 
-    {{ val }}
-    <img :src="img" style="width: 19%; display:inline-block;">
+    <p>Score : {{ score }}</p>
+    <img :src="img" v-show="photo" style="width: 19%; display:inline-block;">
 
     
     
@@ -39,6 +39,7 @@ export default {
       token: '',
       marker: '',
       markerResult: '',
+      photo: true,
     }
   },
 
@@ -48,14 +49,24 @@ export default {
       this.btn_val = false;
       this.btn_suiv = true;
       window.bus.$emit('addMarkerResult');
+
+      if(this.val<= 20)
+        this.score = this.score+5;
+      else if (this.val<= 30)
+        this.score = this.score+4;
+      else if (this.val<= 40)
+        this.score = this.score+2;
+      else if (this.val<= 50)
+        this.score = this.score+1;
+
     },
 
     suivant() {
-      window.bus.$emit('removeMarker');
-      this.score = this.score+1;
+      window.bus.$emit('removeMarker');      
       this.nombre = this.nombre+1;
       if(this.nombre > this.liste['image'].length-1)
       {
+        this.photo = false;
         this.btn_suiv = false;
         window.axios.put('partie',{
 
@@ -128,7 +139,7 @@ export default {
     }
 
     window.bus.$on('updateCoord',() => {
-      this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1)*0.001+'km';
+      this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
       this.btn_val = true;
       this.marker = L.marker([temp.lat, temp.lng]).addTo(map);   
     });
@@ -139,9 +150,23 @@ export default {
       map.removeLayer(this.markerResult);
     });
   
+    var greenIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
 
     window.bus.$on('addMarkerResult',() => {
-      this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']]).addTo(map);
+      if(this.val<=20)
+      {
+        map.removeLayer(this.marker);
+        this.marker = L.marker([temp.lat, temp.lng], {icon: greenIcon}).addTo(map);
+      }
+      else
+        this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
     });  
 
     var map = L.map('map', {
