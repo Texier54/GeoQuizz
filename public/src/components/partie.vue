@@ -125,6 +125,28 @@ export default {
       //console.log(this.liste['image'][0]);
       this.img = this.liste['image'][0]['url'];
       this.token = this.liste['token'];
+      let lat = this.liste['serie']['latitude'];
+      let lng = this.liste['serie']['longitude'];
+
+      console.log(this.liste['serie']['latitude']);
+
+      var map = L.map('map', {
+          center: [lat, lng],
+          zoom: 16,
+
+      });
+
+      L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          minZoom: 1,
+          maxZoom: 16
+      }).addTo(map);
+
+      map.on('click', function(ev) {
+        temp = ev.latlng;
+        window.bus.$emit('updateCoord');
+      });
+
 
     }).catch((error) => {
 
@@ -196,23 +218,6 @@ export default {
       }
       else
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
-    });  
-
-    var map = L.map('map', {
-        center: [48.692054, 6.184417],
-        zoom: 16,
-
-    });
-
-    L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-        minZoom: 1,
-        maxZoom: 16
-    }).addTo(map);
-
-    map.on('click', function(ev) {
-      temp = ev.latlng;
-      window.bus.$emit('updateCoord');
     });
 
   }

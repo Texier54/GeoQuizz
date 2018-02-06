@@ -96,7 +96,10 @@
 				$partie->nb_photos = 10;
 
 				$photo = new photo();
-				$photo = $photo->select('id', 'longitude', 'latitude', 'url')->get();
+				$photo = $photo->where('id_serie', '=', 1)->select('id', 'longitude', 'latitude', 'url')->get();
+
+				$serie = new serie();
+				$serie = $serie->where('id', '=', 1)->first();
 
 				try {
 					$partie->save();
@@ -108,7 +111,7 @@
 
 				$resp= $resp->withStatus(201);
 
-				$tab = ['token' => $partie->token, 'image' => $photo ];
+				$tab = ['token' => $partie->token, 'image' => $photo, 'serie' => $serie ];
 
 				$resp->getBody()->write(json_encode($tab));
 				return $resp;
