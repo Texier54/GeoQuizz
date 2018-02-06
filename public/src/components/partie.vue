@@ -1,18 +1,27 @@
 <template>
 
-  <div style="height: 100%; width: 100%">
 
+  <div>
 
+    <nav-bar></nav-bar>
 
-    <div id="map" style="height: 100%; width: 80%; display:inline-block;">
+    <div class="columns" style="height: 100%;">
+
+      <div style="height: 100%; width: 100%">
+      <div id="map" style="height: 100%; width: 100%" class="column is-three-fifths">
+      </div>
     </div>
 
-    <button style="display:inline-block;" @click="suivant">Suivant</button>
+      <div class="column">
+        <img :src="img" v-show="photo" style="width:100%; height: 100%;">
+      </div>
 
-    {{ val }}
-    <img :src="img" style="width: 19%; display:inline-block;">
+      <button v-show="btn_val" @click="valider">Valider</button>
+      <button v-show="btn_suiv" @click="suivant">Suivant</button>
 
-    
+      <p>Score : {{ score }}</p>
+
+    </div>
     
   </div>
 
@@ -21,24 +30,71 @@
 
 <script>
 
-
+import NavBar from './navBar.vue'
 
 export default {
   name: 'partie',
-  components: {},
+  components: {NavBar},
   data () {
     return {
       liste: '',
       val: '',
       img: '',
       nombre: 0,
+      btn_suiv: false,
+      btn_val:false,
+      score: 0,
+      token: '',
+      marker: '',
+      markerResult: '',
+      photo: true,
     }
   },
 
   methods : {
+
+    valider() {
+      this.btn_val = false;
+      this.btn_suiv = true;
+      window.bus.$emit('addMarkerResult');
+
+      if(this.val<= 20)
+        this.score = this.score+5;
+      else if (this.val<= 30)
+        this.score = this.score+4;
+      else if (this.val<= 40)
+        this.score = this.score+2;
+      else if (this.val<= 50)
+        this.score = this.score+1;
+
+    },
+
     suivant() {
+      window.bus.$emit('removeMarker');      
       this.nombre = this.nombre+1;
-      this.img = this.liste['image'][this.nombre]['url'];
+      if(this.nombre > this.liste['image'].length-1)
+      {
+        this.photo = false;
+        this.btn_suiv = false;
+        window.axios.put('partie',{
+
+          token : this.token,
+          score : this.score
+
+        }).then((response) => {
+
+        }).catch((error) => {
+
+          console.log(error);
+
+        });
+      }
+      else
+      {
+        this.img = this.liste['image'][this.nombre]['url'];
+        this.btn_suiv = false;
+      }
+
     }
   },
 
@@ -47,13 +103,15 @@ export default {
 
     window.axios.post('partie',{
 
-      pseudo : 'zf'
+      pseudo : 'mabite'
+      //pseudo : prompt('Pseudo :')
 
     }).then((response) => {
 
       this.liste = response.data;
       //console.log(this.liste['image'][0]);
       this.img = this.liste['image'][0]['url'];
+      this.token = this.liste['token'];
 
     }).catch((error) => {
 
@@ -85,16 +143,40 @@ export default {
     var temp;
 
     function precisionRound(number, precision) {
-  var factor = Math.pow(10, precision);
-  return Math.round(number * factor) / factor;
-}
+      var factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+    }
 
     window.bus.$on('updateCoord',() => {
-      this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1)*0.001+'km';
+      this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
+      this.btn_val = true;
+      this.marker = L.marker([temp.lat, temp.lng]).addTo(map);   
     });
 
 
-    
+    window.bus.$on('removeMarker',() => {
+      map.removeLayer(this.marker);
+      map.removeLayer(this.markerResult);
+    });
+  
+    var greenIcon = new L.Icon({
+      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+      iconSize: [25, 41],
+      iconAnchor: [12, 41],
+      popupAnchor: [1, -34],
+      shadowSize: [41, 41]
+    });
+
+    window.bus.$on('addMarkerResult',() => {
+      if(this.val<=20)
+      {
+        map.removeLayer(this.marker);
+        this.marker = L.marker([temp.lat, temp.lng], {icon: greenIcon}).addTo(map);
+      }
+      else
+        this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
+    });  
 
     var map = L.map('map', {
         center: [48.692054, 6.184417],
@@ -107,6 +189,8 @@ export default {
         minZoom: 1,
         maxZoom: 16
     }).addTo(map);
+
+
 
 
     map.on('click', function(ev) {

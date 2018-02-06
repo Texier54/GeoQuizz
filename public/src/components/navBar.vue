@@ -1,15 +1,17 @@
 <template>
 
-
-  <nav class="navbar is-white ">
-
-  <div class="navbar-brand"><a href="/" class="navbar-item">
-    <b>GeoQuizz</b>
-    </a>
-  </div>
-
-  </nav>
+  <div class="columns">
     
+    <nav class="navbar is-dark column is-12">
+
+    <div class="navbar-brand"><a href="/" class="navbar-item">
+      <b>GeoQuizz</b>
+      </a>
+    </div>
+
+    </nav>
+    
+  </div>
 
 
 </template>

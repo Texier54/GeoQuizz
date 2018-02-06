@@ -113,6 +113,47 @@
 			}
 		}
 
+		public function updatePartie($req, $resp, $args) {
+
+			if ($req->getAttribute( 'has_errors' )) {
+
+				$resp= $resp->withStatus(400);
+
+				$temp = array("type" => "error", "error" => '400', "message" => "Donnée manquante");
+				
+				$resp->getBody()->write(json_encode($temp));
+
+				return $resp;	
+			} 
+			else {
+
+				$parsedBody = $req->getParsedBody();
+
+				$partie = new \geoquizz\common\models\Partie();
+				$partie = $partie->where('token', '=', $parsedBody['token'])->first();
+				$partie->status = 2;
+				$partie->score = $parsedBody['score'];
+
+				try {
+					$partie->save();
+				} catch(\Exception $e) {
+					echo $e->getmessage();
+				}
+
+				$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
+
+				$resp= $resp->withStatus(201);
+
+				//$resp = $resp->withHeader('Location', $this->container['router']->pathFor('comid', ['id' => $com->id] ) );
+
+				$tab = ['token' => $partie->token];
+
+				$resp->getBody()->write(json_encode($tab));
+				return $resp;
+
+			}
+		}
+
 
 
 

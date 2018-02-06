@@ -91,5 +91,18 @@ $app->post('/partie[/]', function (Request $req, Response $resp, $args) {
 )->add(new Validation( $validatorsCreatePartie));
 
 
+/* Validator */
+$validatorsUpdatePartie = [
+    'token' => v::notEmpty(),
+    'score' => v::notEmpty(),
+];
+
+$app->put('/partie[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->updatePartie($req, $resp, $args);
+    }
+)->add(new Validation( $validatorsUpdatePartie));
+
+
 $app->run();
  
