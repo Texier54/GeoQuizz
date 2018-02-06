@@ -45,21 +45,76 @@ $app->get('/', function ($request, $response, $args) {
         'session' => isset($_SESSION['pseudo'])
     ]);
 })->setName('home');
+
+$app->get('/serie/{id}', function ($request, $response, $args) {
+
+    if(!isset($_SESSION['pseudo'])) {
+        return $response->withRedirect($this->router->pathFor('connexion'), 301);
+    }
+
+    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+
+    return $this->view->render($response, 'serie.html.twig', [
+        'data' => $arr,
+        'session' => isset($_SESSION['pseudo'])
+    ]);
+})->setName('serie');
+
+$app->get('/addSerie', function ($request, $response, $args) {
+
+    if(!isset($_SESSION['pseudo'])) {
+        return $response->withRedirect($this->router->pathFor('connexion'), 301);
+    }
+
+    return $this->view->render($response, 'addSerie.html.twig', [
+        'session' => isset($_SESSION['pseudo'])
+    ]);
+})->setName('addSerie');
+
+$app->post('/addSerie', function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $serie = new \geoquizz\common\models\Serie();
+
+    if( isset($parsedBody['longitude']) && isset($parsedBody['latitude']) &&
+        isset($parsedBody['ville']) && isset($parsedBody['zoom'])
+    )
+    {
+		$serie->ville = $parsedBody['ville'];
+		$serie->zoom = $parsedBody['zoom'];
+		$serie->longitude = $parsedBody['longitude'];
+		$serie->latitude = $parsedBody['latitude'];
+		try {
+			$serie->save();
+		} catch(\Exception $e) {
+			echo $e->getmessage();
+		}
+        
+        return $response->withRedirect($this->router->pathFor('home'), 301);
+    }
+    else 
+    {
+        return $this->view->render($response, 'addSerie.html.twig', []);
+    }
+});
+
 $app->get('/connexion', function ($request, $response, $args) {
     if(isset($_SESSION['pseudo']))
         return $response->withRedirect($this->router->pathFor('home'), 301);
     return $this->view->render($response, 'connexion.html.twig', []);
 })->setName('connexion');
+
 $app->get('/register', function ($request, $response, $args) {
     if(isset($_SESSION['pseudo']))
         return $response->withRedirect($this->router->pathFor('home'), 301);
     return $this->view->render($response, 'register.html.twig', []);
 })->setName('register');
+
 $app->get('/deconnexion', function ($request, $response, $args) {
     unset ($_SESSION['pseudo']);
     session_destroy();
     return $response->withRedirect($this->router->pathFor('home'), 301);
 })->setName('deconnexion');
+
 $app->post('/connexion', function ($request, $response, $args) {
     $parsedBody = $request->getParsedBody();
     $arr = new \geoquizz\common\models\User();
@@ -87,6 +142,7 @@ $app->post('/connexion', function ($request, $response, $args) {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
 });
+
 $app->post('/register', function ($request, $response, $args) {
     $parsedBody = $request->getParsedBody();
     $user = new \geoquizz\common\models\User();
