@@ -1,32 +1,30 @@
 <template>
 
-
   <div>
 
     <nav-bar></nav-bar>
-
 
     <section class="container">
 
       <div class="columns">
 
-        <div class="column is-9">
-
-          <div id="map" style="min-height: 600px; width: 100%;" class="column is-three-fifths">
+        <div class="column is-7">
+          <div id="map">
           </div>
-
         </div>
 
 
-        <div class="column is-3">
-
-
+        <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
+
+          <div class="is-size-3 has-text-centered has-text-weight-bold">
+            <p class="is-">NANCY</p>
+          </div>
 
           <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
           <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
 
-          <div class="points">
+          <div class="points is-size-4 has-text-weight-semibold">
             <p class="score">Score : {{ score }}</p>
             <p class="ptsgagne">+{{ newscore }}</p>
           </div>
@@ -240,6 +238,11 @@ export default {
 
 <style scoped>
 
+#map{
+  min-height: 600px; 
+  width: 100%;
+}
+
 .container {
   padding-top: 10px;
 }
@@ -275,8 +278,6 @@ body {
 
 .points{
   margin-top: 20px;
-  font-weight: bold;
-  font-size: 30px;
 }
 
 .score{
