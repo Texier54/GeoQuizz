@@ -127,7 +127,7 @@ $app->get('/photo/{id}', function (Request $req, Response $resp, $args) {
     }
 )->setName('photoID');
 
-$app->get('/users[/]', function (Request $req, Response $resp, $args) {
+$app->get('/photos[/]', function (Request $req, Response $resp, $args) {
     $c = new geoquizz\api\control\Controller($this);
     return $c->getPhotos($req, $resp, $args);
     }

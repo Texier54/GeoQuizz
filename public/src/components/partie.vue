@@ -5,24 +5,35 @@
 
     <nav-bar></nav-bar>
 
-    <div class="columns" style="height: 100%;">
 
-      <div style="height: 100%; width: 100%">
-      <div id="map" style="height: 100%; width: 100%" class="column is-three-fifths">
+    <section class="container">
+
+      <div class="columns">
+
+        <div class="column is-9">
+
+          <div id="map" style="min-height: 600px; width: 100%;" class="column is-three-fifths">
+          </div>
+
+        </div>
+
+
+        <div class="column is-3">
+
+
+          <img :src="img" v-show="photo">
+
+          <button class="button is-success" v-show="btn_val" @click="valider">Valider</button>
+          <button class="button is-info" v-show="btn_suiv" @click="suivant">Suivant</button>
+
+          <p>Score : {{ score }}</p>
+
+        </div>
+
       </div>
-    </div>
 
-      <div class="column">
-        <img :src="img" v-show="photo" style="width:100%; height: 100%;">
-      </div>
+    </section>
 
-      <button v-show="btn_val" @click="valider">Valider</button>
-      <button v-show="btn_suiv" @click="suivant">Suivant</button>
-
-      <p>Score : {{ score }}</p>
-
-    </div>
-    
   </div>
 
 
@@ -148,9 +159,16 @@ export default {
     }
 
     window.bus.$on('updateCoord',() => {
-      this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
-      this.btn_val = true;
-      this.marker = L.marker([temp.lat, temp.lng]).addTo(map);   
+
+      if(this.btn_suiv == false)
+      {
+        if(this.marker != '')
+          map.removeLayer(this.marker);
+
+        this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
+        this.btn_val = true;
+        this.marker = L.marker([temp.lat, temp.lng]).addTo(map);
+      }
     });
 
 
@@ -203,8 +221,18 @@ export default {
 </script>
 
 <style>
-html, body, #app {
-  height: 100%;
-  margin: 0;
+.container {
+  padding-top: 10px;
+}
+body {
+  background-color: #F2F6FA;
+   margin: 0px;
+
+   padding: 0px;
+
+   outline: 0px;
+   height: 100%;
+   width: 100%;
+   position: absolute;
 }
 </style>
