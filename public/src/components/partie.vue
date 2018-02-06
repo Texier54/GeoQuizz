@@ -114,8 +114,7 @@ export default {
   },
 
   mounted() {
-
-
+    
     window.axios.post('partie',{
 
       pseudo : this.$route.params.pseudo
@@ -210,9 +209,6 @@ export default {
         minZoom: 1,
         maxZoom: 16
     }).addTo(map);
-
-
-
 
     map.on('click', function(ev) {
       temp = ev.latlng;

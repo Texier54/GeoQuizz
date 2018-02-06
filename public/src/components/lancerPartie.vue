@@ -28,16 +28,17 @@
           <p class="modal-card-title">Lancer une partie</p>
           <button class="delete" @click="fermer" aria-label="close"></button>
         </header>
-        <form @submit="valider">
-          <section class="modal-card-body">
-              <label class="label" id="pseudo">Pseudo</label>
-              <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
-          </section>
-          <footer class="modal-card-foot">
-            <input type="submit" class="button is-success">
-            <button class="button" @click="fermer">Cancel</button>
-          </footer>
-        </form>
+
+        <section class="modal-card-body">
+            <label class="label" id="pseudo">Pseudo</label>
+            <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
+        </section>
+
+        <footer class="modal-card-foot">
+          <router-link class="button is-success" :to="{ name:'partie', params : { pseudo : pseudo } }">Lancer</router-link>
+          <button class="button" @click="fermer">Cancel</button>
+        </footer>
+
       </div>
     </div>
 
@@ -64,11 +65,7 @@ export default {
     },
     fermer() {
       this.lancer = false;
-    },
-    valider() {
-      this.$router.push({ name: 'partie', params: { pseudo: this.pseudo }})
     }
-
   }
 }
 </script>
