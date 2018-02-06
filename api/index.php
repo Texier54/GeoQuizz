@@ -103,6 +103,35 @@ $app->put('/partie[/]', function (Request $req, Response $resp, $args) {
     }
 )->add(new Validation( $validatorsUpdatePartie));
 
+$app->post('/user[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->createUser($req, $resp, $args);
+    }
+);
+
+$app->get('/users[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->getUsers($req, $resp, $args);
+    }
+);
+
+$app->post('/photo[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->createPhoto($req, $resp, $args);
+    }
+);
+
+$app->get('/photo/{id}', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->getPhotoID($req, $resp, $args);
+    }
+)->setName('photoID');
+
+$app->get('/users[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->getPhotos($req, $resp, $args);
+    }
+);
 
 $app->run();
  
