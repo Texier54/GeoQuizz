@@ -23,8 +23,8 @@
 
           <img :src="img" v-show="photo">
 
-          <button class="button is-success" v-show="btn_val" @click="valider">Valider</button>
-          <button class="button is-info" v-show="btn_suiv" @click="suivant">Suivant</button>
+          <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
+          <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
 
           <p>Score : {{ score }}</p>
 
@@ -220,19 +220,31 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+
 .container {
   padding-top: 10px;
 }
+
 body {
   background-color: #F2F6FA;
-   margin: 0px;
-
-   padding: 0px;
-
-   outline: 0px;
-   height: 100%;
-   width: 100%;
-   position: absolute;
+  margin: 0px;
+  padding: 0px;
+  outline: 0px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
 }
+
+.btn{
+  font-weight: bold;
+  -webkit-transition: width 2s; /* For Safari 3.1 to 6.0 */
+    transition: width 2s;
+}
+
+.btn:hover{
+  color: #363636;
+
+}
+
 </style>
