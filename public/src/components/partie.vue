@@ -4,10 +4,11 @@
 
 
 
-    <div id="map" style="height: 100%; width: 80%; display:inline-block;">
+    <div id="map" style="height: 100%; width: 80%; float:left;">
     </div>
 
-    <button style="display:inline-block;" @click="suivant">Suivant</button>
+    <button v-show="btn_val" style="width: 19%; margin-top: 0px; display:inline-block;" @click="valider">Valider</button>
+    <button v-show="btn_suiv" style="width: 19%; margin-top: 0px; display:inline-block;" @click="suivant">Suivant</button>
 
     {{ val }}
     <img :src="img" style="width: 19%; display:inline-block;">
@@ -32,13 +33,49 @@ export default {
       val: '',
       img: '',
       nombre: 0,
+      btn_suiv: false,
+      btn_val:false,
+      score: 0,
+      token: '',
+      marker: '',
+      markerResult: '',
     }
   },
 
   methods : {
+
+    valider() {
+      this.btn_val = false;
+      this.btn_suiv = true;
+      window.bus.$emit('addMarkerResult');
+    },
+
     suivant() {
+      window.bus.$emit('removeMarker');
+      this.score = this.score+1;
       this.nombre = this.nombre+1;
-      this.img = this.liste['image'][this.nombre]['url'];
+      if(this.nombre > this.liste['image'].length-1)
+      {
+        this.btn_suiv = false;
+        window.axios.put('partie',{
+
+          token : this.token,
+          score : this.score
+
+        }).then((response) => {
+
+        }).catch((error) => {
+
+          console.log(error);
+
+        });
+      }
+      else
+      {
+        this.img = this.liste['image'][this.nombre]['url'];
+        this.btn_suiv = false;
+      }
+
     }
   },
 
@@ -47,13 +84,14 @@ export default {
 
     window.axios.post('partie',{
 
-      pseudo : 'zf'
+      pseudo : prompt('Pseudo :')
 
     }).then((response) => {
 
       this.liste = response.data;
       //console.log(this.liste['image'][0]);
       this.img = this.liste['image'][0]['url'];
+      this.token = this.liste['token'];
 
     }).catch((error) => {
 
@@ -85,16 +123,26 @@ export default {
     var temp;
 
     function precisionRound(number, precision) {
-  var factor = Math.pow(10, precision);
-  return Math.round(number * factor) / factor;
-}
+      var factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+    }
 
     window.bus.$on('updateCoord',() => {
       this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1)*0.001+'km';
+      this.btn_val = true;
+      this.marker = L.marker([temp.lat, temp.lng]).addTo(map);   
     });
 
 
-    
+    window.bus.$on('removeMarker',() => {
+      map.removeLayer(this.marker);
+      map.removeLayer(this.markerResult);
+    });
+  
+
+    window.bus.$on('addMarkerResult',() => {
+      this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']]).addTo(map);
+    });  
 
     var map = L.map('map', {
         center: [48.692054, 6.184417],
@@ -107,6 +155,8 @@ export default {
         minZoom: 1,
         maxZoom: 16
     }).addTo(map);
+
+
 
 
     map.on('click', function(ev) {
