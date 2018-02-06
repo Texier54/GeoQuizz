@@ -31,6 +31,8 @@
             <p class="ptsgagne">+{{ newscore }}</p>
           </div>
 
+          <progress class="progress is-success" :value="progress" max="60">{{ progress }}</progress>
+
         </div>
 
       </div>
@@ -63,6 +65,7 @@ export default {
       marker: '',
       markerResult: '',
       photo: true,
+      progress: 0,
     }
   },
 
@@ -114,6 +117,9 @@ export default {
   },
 
   mounted() {
+
+    var map = '';
+    var intervalProgress = '';
     
     window.axios.post('partie',{
 
@@ -128,9 +134,7 @@ export default {
       let lat = this.liste['serie']['latitude'];
       let lng = this.liste['serie']['longitude'];
 
-      console.log(this.liste['serie']['latitude']);
-
-      var map = L.map('map', {
+          map = L.map('map', {
           center: [lat, lng],
           zoom: 16,
 
@@ -147,6 +151,7 @@ export default {
         window.bus.$emit('updateCoord');
       });
 
+      intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 100);
 
     }).catch((error) => {
 
@@ -193,6 +198,15 @@ export default {
         this.btn_val = true;
         this.marker = L.marker([temp.lat, temp.lng]).addTo(map);
       }
+    });
+
+
+
+    window.bus.$on('updateProgress',() => {
+      this.progress = this.progress+1;
+      console.log(this.progress);
+      if(this.progress >= 60)
+        clearInterval(intervalProgress);
     });
 
 
