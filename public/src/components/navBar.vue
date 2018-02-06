@@ -45,8 +45,14 @@ export default {
 
 .btn{
   margin-top: 11px;
-  margin-right: 5px;
+  margin-right: 10px;
   font-weight: bold;
+  -webkit-transition-property: color;
+  -webkit-transition-duration: 0.5s;
+  -moz-transition-property: color;
+  -moz-transition-duration: 0.5s;
+  transition-property: color;
+  transition-duration: 0.5s;
 }
 
 .btn:hover{
