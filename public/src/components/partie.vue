@@ -118,8 +118,7 @@ export default {
 
     window.axios.post('partie',{
 
-      pseudo : 'mabite'
-      //pseudo : prompt('Pseudo :')
+      pseudo : this.$route.params.pseudo
 
     }).then((response) => {
 
