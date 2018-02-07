@@ -12,7 +12,7 @@
     </div>
 
     <div class="navbar-menu" id="navMenu">
-
+    <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5">Susprendre partie</button>
       <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
     </div>
 
@@ -56,6 +56,11 @@ export default {
   methods : {
     quitter() {
       window.bus.$emit('quitterPartie');
+      this.$router.push({ path: 'lancerPartie'});
+    },
+
+    suspendre() {
+      window.bus.$emit('suspendrePartie');
       this.$router.push({ path: 'lancerPartie'});
     }
 

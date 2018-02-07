@@ -40,9 +40,9 @@ CREATE TABLE photo(
 
 CREATE TABLE serie(
         id        int (11) Auto_increment  NOT NULL ,
-        ville     Varchar (25) ,
-        latitude  Varchar (25) ,
-        longitude Varchar (25) ,
+        ville     Varchar (50) ,
+        latitude  Varchar (50) ,
+        longitude Varchar (50) ,
         distance  Varchar (25) ,
         zoom      Varchar (25) ,
         PRIMARY KEY (id )
