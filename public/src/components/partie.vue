@@ -18,7 +18,7 @@
           <img class="img" :src="img" v-show="photo">
 
           <div class="is-size-3 has-text-centered has-text-weight-bold">
-            <p class="is-">NANCY</p>
+            <p class="is-">{{ liste['serie']['ville'] }}</p>
           </div>
 
           <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
@@ -75,13 +75,25 @@ export default {
       window.bus.$emit('addMarkerResult');
 
       if(this.val<= 20)
+      {
         this.score = this.score+5;
+        this.newscore = 5;
+      }
       else if (this.val<= 30)
+      {
         this.score = this.score+4;
+        this.newscore = 4;
+      }
       else if (this.val<= 40)
+      {
         this.score = this.score+2;
+        this.newscore = 2;
+      }
       else if (this.val<= 50)
+      {
         this.score = this.score+1;
+        this.newscore = 1;
+      }
 
     },
 
@@ -98,6 +110,8 @@ export default {
           score : this.score
 
         }).then((response) => {
+
+          this.newscore = 0;
 
         }).catch((error) => {
 
@@ -149,7 +163,7 @@ export default {
         window.bus.$emit('updateCoord');
       });
 
-      intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 100);
+      intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
 
     }).catch((error) => {
 
