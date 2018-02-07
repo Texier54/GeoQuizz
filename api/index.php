@@ -20,34 +20,6 @@ use \DavidePastore\Slim\Validation\Validation as Validation;
 $error = require_once __DIR__.'/../src/conf/error.php';
 
 
-function checkToken ( Request $rq, Response $rs, callable $next ) 
-{
-	// récupérer l'identifiant de cmmde dans la route et le token
-	$id = $rq->getAttribute('route')->getArgument( 'id');
-	$token = $rq->getQueryParam('token', null);
-
-	// vérifier que le token correspond à la commande
-	try 
-	{
-		\geoquizz\common\models\Commande::where('id', '=', $id)->where('token', '=',$token)->firstOrFail();
-
-	} catch (ModelNotFoundException $e) {
-
-		$rs= $rs->withHeader( 'Content-type', "application/json;charset=utf-8");
-
-		$rs= $rs->withStatus(404);
-
-		$temp = array("type" => "error", "error" => '404', "message" => "Le token n'est pas valide");
-			
-		$rs->getBody()->write(json_encode($temp));
-		return $rs;
-
-	};
-
-	return $next($rq, $rs);
-};
-
-
 $app->add(function ($req, $res, $next) {
     $response = $next($req, $res);
     return $response
