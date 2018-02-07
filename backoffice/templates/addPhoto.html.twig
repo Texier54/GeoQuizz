@@ -1,15 +1,19 @@
 {% extends "layout.html.twig" %}
 
+{% block flash %}
+    {% if flash() %}
+        <ul class="alert alert-danger">
+            {% for msg in flash() %}
+                <li>{{ msg[0] }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
 
 <!-- Page Content -->
     <div class="container">
-
-      <!-- Jumbotron Header -->
-      <header class="jumbotron my-4">
-        <h1 class="display-3">Serie de {{data.ville}}</h1>
-        <a href="{{ path_for('addPhoto', { 'id': data.id }) }}"><button type="button" class="btn btn-success">Ajouter photo</button></a>
-      </header>
 
       <!-- Page Features -->
       <div class="row text-center">
@@ -19,27 +23,27 @@
           <form class="form-signin" action="" method="POST">
               <div class="form-group">
                   <label for="nom">Nom</label>
-                  <input type="text" class="form-control" id="nom" name="nom">
+                  <input type="text" class="form-control" id="nom" name="nom" required>
               </div>
               <div class="form-group">
                   <label for="desc">Description</label>
-                  <input type="text" class="form-control" id="desc" name="desc">
+                  <input type="text" class="form-control" id="desc" name="desc" required>
               </div>
               <div class="form-group">
                   <label for="url">Url</label>
-                  <input type="text" class="form-control" id="url" name="url">
+                  <input type="text" class="form-control" id="url" name="url" required>
                   <small id="help" class="form-text text-muted">Enter URL of the image taken from the internet. <br/>
                     <a href="https://prnt.sc"><button type="button" class="btn btn-default">Upload your own?</button></a>
                   </small>
               </div>
               <div class="form-group">
                   <label for="longitude">Longitude</label>
-                  <input type="text" class="form-control" id="longitude" value="" name="longitude">
+                  <input type="text" class="form-control" id="longitude" value="" name="longitude" required>
                   <small id="help" class="form-text text-muted">Drag it to the exact position of the photo.</small>
               </div>
               <div class="form-group">
                   <label for="latitude">Latitude</label>
-                  <input type="text" class="form-control" id="latitude" value="" name="latitude">
+                  <input type="text" class="form-control" id="latitude" value="" name="latitude" required>
                   <small id="help" class="form-text text-muted">Drag it to the exact position of the photo.</small>
               </div>
               <input type="submit" class="btn btn-primary"/>

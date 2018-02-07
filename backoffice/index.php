@@ -17,18 +17,25 @@ $container = $app->getContainer();
 // Register Twig View helper
 $container['view'] = function ($c) {
     $view = new \Slim\Views\Twig('./templates', [
-        'cache' => false
+        'cache' => false,
+        'debug' => true
     ]);
     
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
+    $view->addExtension(new Twig_Extension_Debug());
     $view->addExtension(new \Slim\Views\TwigExtension($c['router'], $basePath));
+    $view->addExtension(new Knlv\Slim\Views\TwigMessages(
+        new Slim\Flash\Messages()
+    ));
     return $view;
 };
 $container['csrf'] = function ($c) {
     return new \Slim\Csrf\Guard;
 };
-
+$container['flash'] = function () {
+    return new \Slim\Flash\Messages();
+};
 /************************************
         Routes
 *************************************/
@@ -87,7 +94,27 @@ $app->get('/addSerie', function ($request, $response, $args) {
     ]);
 })->setName('addSerie');
 
+/*     Validator     */
+$validateAddSerie = [
+    'longitude'    => v::floatVal()->notEmpty(),
+    'latitude'    => v::floatVal()->notEmpty(),
+    'ville'    => v::StringType()->length(3,30)->notEmpty(),
+    'zoom'    => v::StringType()->intVal()->notEmpty()
+];
+
 $app->post('/addSerie', function ($request, $response, $args) {
+
+    if ($request->getAttribute( 'has_errors' )) {
+
+        $this->flash->addMessage('longitude', 'Longitude needs to be a float value.');
+        $this->flash->addMessage('latitude', 'Latitude needs to be a float value.');
+        $this->flash->addMessage('ville', 'Ville needs to be a string 3 to 30 characters long.');
+        $this->flash->addMessage('zoom', 'Zoom needs to be an integer.');
+
+        return $response->withRedirect($this->router->pathFor('addSerie'), 302);
+
+    }
+
     $parsedBody = $request->getParsedBody();
     $serie = new \geoquizz\common\models\Serie();
 
@@ -111,7 +138,7 @@ $app->post('/addSerie', function ($request, $response, $args) {
     {
         return $this->view->render($response, 'addSerie.html.twig', []);
     }
-});
+})->add(new Validation($validateAddSerie));
 
 $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
 
@@ -133,7 +160,28 @@ $app->get('/deletePhoto/{id}', function ($request, $response, $args) {
 
 })->setName('deletePhoto');
 
+/*     Validator     */
+$validateAddPhoto = [
+    'longitude'    => v::floatVal()->notEmpty(),
+    'latitude'    => v::floatVal()->notEmpty(),
+    'nom'    => v::StringType()->length(3,30)->notEmpty(),
+    'desc'    => v::StringType()->length(3,30)->notEmpty(),
+    'url'    => v::notEmpty()
+];
+
 $app->post('/addPhoto/{id}', function ($request, $response, $args) {
+    if ($request->getAttribute( 'has_errors' )) {
+
+        $this->flash->addMessage('nom', 'Nom needs to be a string 3 to 30 characters long.');
+        $this->flash->addMessage('desc', 'Description needs to be a string 3 to 30 characters long.');
+        $this->flash->addMessage('url', 'Url needs to be an image and not empty.');
+        $this->flash->addMessage('longitude', 'Longitude needs to be a float value.');
+        $this->flash->addMessage('latitude', 'Latitude needs to be a float value.');
+
+        return $response->withRedirect($this->router->pathFor('addPhoto', ['id' => $args['id']]));
+
+    }
+
     $parsedBody = $request->getParsedBody();
     $photo = new \geoquizz\common\models\Photo();
 
@@ -158,9 +206,9 @@ $app->post('/addPhoto/{id}', function ($request, $response, $args) {
     }
     else 
     {
-        return $response->withRedirect($this->router->pathFor('photo'), ['id' => 'id']);
+        return $response->withRedirect($this->router->pathFor('addPhoto', ['id' => $args['id']]));
     }
-});
+})->add(new Validation($validateAddPhoto));
 
 $app->get('/connexion', function ($request, $response, $args) {
     if(isset($_SESSION['pseudo']))
@@ -180,7 +228,22 @@ $app->get('/deconnexion', function ($request, $response, $args) {
     return $response->withRedirect($this->router->pathFor('home'), 301);
 })->setName('deconnexion');
 
+/*     Validator     */
+$validateConnexion = [
+    'pseudo'    => v::notEmpty(),
+    'password'    => v::notEmpty()
+];
+
 $app->post('/connexion', function ($request, $response, $args) {
+
+    if ($request->getAttribute( 'has_errors' )) {
+
+        $this->flash->addMessage('pseudo', 'Please fill in your credentials.');
+
+        return $response->withRedirect($this->router->pathFor('addPhoto', ['id' => $args['id']]));
+
+    }
+
     $parsedBody = $request->getParsedBody();
     $arr = new \geoquizz\common\models\User();
             
@@ -199,6 +262,7 @@ $app->post('/connexion', function ($request, $response, $args) {
                 return $response->withRedirect($this->router->pathFor('connexion'), 301);
             }  
         } catch(\Exception $e) {
+            $this->flash->addMessage('credentials', 'Your credentials are false.');
             return $response->withRedirect($this->router->pathFor('connexion'), 301);
         }
     }
@@ -206,19 +270,47 @@ $app->post('/connexion', function ($request, $response, $args) {
     {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
-});
+})->add(new Validation($validateConnexion));
+
+/*     Validator     */
+$validateRegister = [
+    'pseudo'    => v::StringType()->length(3,30)->notEmpty(),
+    'password'    => v::StringType()->length(3,30)->notEmpty(),
+    'nom'    => v::StringType()->length(3,30)->notEmpty(),
+    'prenom'    => v::StringType()->length(3,30)->notEmpty(),
+    'email'    => v::email()->notEmpty()
+];
 
 $app->post('/register', function ($request, $response, $args) {
+    if ($request->getAttribute( 'has_errors' )) {
+
+        $this->flash->addMessage('pseudo', 'Pseudo needs to be a string 3 to 30 characters long.');
+        $this->flash->addMessage('password', 'Password needs to be a string 3 to 30 characters long.');
+        $this->flash->addMessage('nom', 'Nom needs to be 3 to 30 characters long.');
+        $this->flash->addMessage('prenom', 'Prenom needs to be 3 to 30 characters long.');
+        $this->flash->addMessage('email', 'Email needs to be a valid email address.');
+
+        return $response->withRedirect($this->router->pathFor('register'));
+
+    }
+
     $parsedBody = $request->getParsedBody();
     $user = new \geoquizz\common\models\User();
     $existsPseudo = $user->where('pseudo', '=', $parsedBody['pseudo'])->first();
     $existsMail = $user->where('mail', '=', $parsedBody['email'])->first();
             
     if( isset($parsedBody['pseudo']) && isset($parsedBody['password']) &&
-        isset($parsedBody['nom']) && isset($parsedBody['prenom']) && isset($parsedBody['email']) &&
-        !$existsPseudo && !$existsMail
+        isset($parsedBody['nom']) && isset($parsedBody['prenom']) && isset($parsedBody['email'])
     )
     {
+        if($existsPseudo) {
+            $this->flash->addMessage('pseudo', 'The pseudo needs to be unique.');
+            return $response->withRedirect($this->router->pathFor('register'));
+        } else if ($existsMail) {
+            $this->flash->addMessage('email', 'The email needs to be unique.');
+            return $response->withRedirect($this->router->pathFor('register'));
+        }
+
         echo password_hash($parsedBody['password'], PASSWORD_DEFAULT);
 		$user->pseudo = $parsedBody['pseudo'];
 		$user->password = password_hash($parsedBody['password'], PASSWORD_DEFAULT);
@@ -237,7 +329,7 @@ $app->post('/register', function ($request, $response, $args) {
     {
         return $this->view->render($response, 'register.html.twig', []);
     }
-});
+})->add(new Validation($validateRegister));
 
 // Run app
 $app->run();
