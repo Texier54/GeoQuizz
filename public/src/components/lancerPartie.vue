@@ -21,7 +21,7 @@
 
         <div class="has-text-centered is-marginless">
           <button class="button is-primary is-large is-capitalized has-text-weight-bold" @click="lancerPartie"><i class="marker fas fa-gamepad"></i>Lancer partie</button>
-          <router-link v-show="this.$store.state.partie" class="button is-primary is-large is-capitalized has-text-weight-bold" :to="{ name:'partie', params : { partie : this.$store.state.partie } }"><i class="marker fas fa-gamepad"></i>Reprendre partie</router-link>
+          <router-link v-show="this.$store.state.partie.save" class="button is-primary is-large is-capitalized has-text-weight-bold" :to="{ name:'partie', params : { partie : this.$store.state.partie } }"><i class="marker fas fa-gamepad"></i>Reprendre partie</router-link>
           <p v-show="this.$store.state.partie">Recommencer une partie supprimera la sauvegarde</p>
         </div>
 
@@ -88,6 +88,9 @@ export default {
     }
   },
   mounted() {
+
+    if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
+      this.$store.commit('setPartie', false);
 
     window.axios.get('series').then((response) => {
       this.series = response.data;

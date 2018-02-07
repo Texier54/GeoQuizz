@@ -65,7 +65,7 @@ $app->post('/partie[/]', function (Request $req, Response $resp, $args) {
 
 /* Validator */
 $validatorsUpdatePartie = [
-    'score' => v::notEmpty(),
+    'score' => v::intVal(),
     'etat' => v::notEmpty(),
 ];
 

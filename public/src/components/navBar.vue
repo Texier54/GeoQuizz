@@ -56,12 +56,10 @@ export default {
   methods : {
     quitter() {
       window.bus.$emit('quitterPartie');
-      this.$router.push({ path: 'lancerPartie'});
     },
 
     suspendre() {
       window.bus.$emit('suspendrePartie');
-      this.$router.push({ path: 'lancerPartie'});
     }
 
   }
