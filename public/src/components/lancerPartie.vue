@@ -45,7 +45,7 @@
         </section>
 
         <footer class="modal-card-foot">
-          <router-link class="button is-success" :to="{ name:'partie', params : { pseudo : pseudo } }">Lancer</router-link>
+          <router-link class="button is-success" :to="{ name:'partie', params : { pseudo : pseudo, serie : serie } }">Lancer</router-link>
           <button class="button" @click="fermer">Cancel</button>
         </footer>
 
@@ -69,6 +69,7 @@ export default {
       lancer: false,
       pseudo: '',
       series: '',
+      serie: '',
     }
   },
   methods : {
@@ -80,13 +81,23 @@ export default {
     }
   },
   mounted() {
+
     window.axios.get('series').then((response) => {
       this.series = response.data;
+      this.serie = this.series[0]['id'];
     }).catch((error) => {
 
       console.log(error);
 
     });
+
+    window.bus.$on('choixSerie',(id) => {
+
+      this.serie = id;
+      
+    });
+
+
   }
 }
 </script>

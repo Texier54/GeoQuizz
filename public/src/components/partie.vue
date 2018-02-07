@@ -146,6 +146,7 @@ export default {
     
     window.axios.post('partie',{
 
+      serie_id : this.$route.params.serie,
       pseudo : this.$route.params.pseudo
 
     }).then((response) => {
