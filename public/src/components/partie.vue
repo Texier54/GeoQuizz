@@ -116,10 +116,11 @@ export default {
       {
         this.photo = false;
         this.btn_suiv = false;
-        window.axios.put('partie',{
 
-          token : this.token,
-          score : this.score
+        window.axios.put('partie/'+this.token,{
+
+          score : this.score,
+          etat: 2
 
         }).then((response) => {
 
@@ -255,6 +256,22 @@ export default {
       }
       else
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
+    });
+
+
+    window.bus.$on('quitterPartie',() => {
+      window.axios.put('partie/'+this.token,{
+
+        score : 0,
+        etat: 3
+
+      }).then((response) => {
+
+      }).catch((error) => {
+
+        console.log(error);
+
+      });
     });
 
   }

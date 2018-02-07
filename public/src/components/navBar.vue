@@ -13,7 +13,7 @@
 
     <div class="navbar-menu" id="navMenu">
 
-      <button class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
+      <button @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
     </div>
 
   </nav>
@@ -54,9 +54,11 @@ export default {
 
   },
   methods : {
-    logOut() {
-      window.bus.$emit('logout');
+    quitter() {
+      window.bus.$emit('quitterPartie');
+      this.$router.push({ path: 'lancerPartie'});
     }
+
   }
 
 }

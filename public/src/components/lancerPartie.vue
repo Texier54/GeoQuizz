@@ -63,7 +63,6 @@
 <script>
 
 import NavBar from './navBar.vue'
-
 import choixSerie from './choix-serie.vue'
 
 export default {

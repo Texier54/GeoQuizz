@@ -137,8 +137,8 @@
 				$parsedBody = $req->getParsedBody();
 
 				$partie = new partie();
-				$partie = $partie->where('token', '=', $parsedBody['token'])->first();
-				$partie->status = 2;
+				$partie = $partie->where('token', '=', $args['token'])->first();
+				$partie->status = $parsedBody['etat'];
 				$partie->score = $parsedBody['score'];
 
 				try {
@@ -149,7 +149,7 @@
 
 				$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
 
-				$resp= $resp->withStatus(201);
+				$resp= $resp->withStatus(200);
 
 				$tab = ['token' => $partie->token];
 
