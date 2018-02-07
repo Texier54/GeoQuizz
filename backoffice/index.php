@@ -52,13 +52,29 @@ $app->get('/serie/{id}', function ($request, $response, $args) {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
 
+    $arr2 = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->get();
     $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
 
     return $this->view->render($response, 'serie.html.twig', [
         'data' => $arr,
+        'photos' => $arr2,
         'session' => isset($_SESSION['pseudo'])
     ]);
 })->setName('serie');
+
+$app->get('/addPhoto/{id}', function ($request, $response, $args) {
+
+    if(!isset($_SESSION['pseudo'])) {
+        return $response->withRedirect($this->router->pathFor('connexion'), 301);
+    }
+
+    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+
+    return $this->view->render($response, 'addPhoto.html.twig', [
+        'data' => $arr,
+        'session' => isset($_SESSION['pseudo'])
+    ]);
+})->setName('addPhoto');
 
 $app->get('/addSerie', function ($request, $response, $args) {
 
@@ -94,6 +110,55 @@ $app->post('/addSerie', function ($request, $response, $args) {
     else 
     {
         return $this->view->render($response, 'addSerie.html.twig', []);
+    }
+});
+
+$app->get('/deleteSerie/{id}', function ($request, $response, $args) {
+
+    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+
+    $arr->delete();
+
+    return $response->withRedirect($this->router->pathFor('home'));
+
+})->setName('deleteSerie');
+
+$app->get('/deletePhoto/{id}', function ($request, $response, $args) {
+
+    $arr = \geoquizz\common\models\Photo::where('id', '=', $args['id'])->firstOrFail();
+
+    $arr->delete();
+
+    return $response->withRedirect($this->router->pathFor('serie'), ['id' => $args['id']]);
+
+})->setName('deletePhoto');
+
+$app->post('/addPhoto/{id}', function ($request, $response, $args) {
+    $parsedBody = $request->getParsedBody();
+    $photo = new \geoquizz\common\models\Photo();
+
+    if( isset($parsedBody['longitude']) && isset($parsedBody['latitude']) &&
+        isset($parsedBody['nom']) && isset($parsedBody['desc']) &&
+        isset($parsedBody['url']) 
+    )
+    {
+		$photo->nom = $parsedBody['nom'];
+		$photo->description = $parsedBody['desc'];
+		$photo->longitude = $parsedBody['longitude'];
+		$photo->latitude = $parsedBody['latitude'];
+		$photo->url = $parsedBody['url'];
+		$photo->id_serie = $args['id'];
+		try {
+			$photo->save();
+		} catch(\Exception $e) {
+			echo $e->getmessage();
+        }
+        
+        return $response->withRedirect($this->router->pathFor('home'));
+    }
+    else 
+    {
+        return $response->withRedirect($this->router->pathFor('photo'), ['id' => 'id']);
     }
 });
 
