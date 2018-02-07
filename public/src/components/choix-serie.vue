@@ -14,7 +14,7 @@ export default {
   },
   methods : {
     choix() {
-      window.bus.$emit('choixSerie', serie.id);
+      window.bus.$emit('choixSerie', this.serie.id);
     }
   }
 }
