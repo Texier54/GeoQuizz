@@ -2,6 +2,7 @@ icone Suspendre partie
 design 60s
 tableau score (vérifier etat partie)
 difficulté
+date partie
 
 supprimer photo avec serie
 check console (backoffice js)
