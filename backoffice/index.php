@@ -129,7 +129,7 @@ $app->get('/deletePhoto/{id}', function ($request, $response, $args) {
 
     $arr->delete();
 
-    return $response->withRedirect($this->router->pathFor('serie'), ['id' => $args['id']]);
+    return $response->withRedirect($this->router->pathFor('home'));
 
 })->setName('deletePhoto');
 
