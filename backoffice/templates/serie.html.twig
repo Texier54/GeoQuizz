@@ -8,7 +8,7 @@
       <!-- Jumbotron Header -->
       <header class="jumbotron my-4">
         <h1 class="display-3">Serie de {{data.ville}}</h1>
-        <button type="button" class="btn btn-success"><a href="{{ path_for('addPhoto', { 'id': data.id }) }}">Ajouter photo</a></button>
+        <a href="{{ path_for('addPhoto', { 'id': data.id }) }}"><button type="button" class="btn btn-success">Ajouter photo</button></a>
       </header>
 
       <!-- Page Features -->
@@ -19,7 +19,7 @@
         <div class="col-lg-3 col-md-4 col-xs-6">
             <h1>{{photo.nom}}</h1>
             <img class="img-fluid img-thumbnail" src="{{photo.url}}" alt="{{photo.description}}"> 
-            <button type="button" class="btn btn-danger"><a href="{{ path_for('deletePhoto', { 'id': photo.id }) }}">Supprimer</a></button>
+            <a href="{{ path_for('deletePhoto', { 'id': photo.id }) }}"><button type="button" class="btn btn-danger">Supprimer</button></a>
         </div>
 
       {% endfor %}

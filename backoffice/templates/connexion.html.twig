@@ -1,26 +1,39 @@
 {% extends "layout.html.twig" %}
 
+{% block flash %}
+    {% if flash() %}
+        <ul class="alert alert-danger">
+            {% for msg in flash() %}
+                <li>{{ msg[0] }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
 
     <div class="container">
 
-      <header class="jumbotron my-4">
-        <h1 class="display-3">Signin</h1>
-        <button type="button" class="btn btn-success"><a href="{{ path_for('register') }}">Nouvelle utilisateur?</a></button>
-      </header>
+      <div class="row">
+        <header class="jumbotron my-4 col-md-12">
+            <h1 class="display-3">Signin</h1>
+            <a href="{{ path_for('register') }}"><button type="button" class="btn btn-success">Nouvelle utilisateur?</button></a>
+        </header>
+        <form class="form-signin col-md-4 col-md-offset-4" action="" method="POST">
+            <h2 class="form-signin-heading">Welcome back</h2> <hr>
 
-      <form class="form-signin" action="" method="POST">
-        <h2 class="form-signin-heading">Welcome back</h2>
-        <label for="pseudo" class="sr-only">Pseudo</label>
+            <div class="form-group">
+                <label for="pseudo">Pseudo</label>
+                <input name="pseudo" type="text" id="pseudo" class="form-control" required autofocus>
+            </div>
 
-        <input name="pseudo" type="text" id="pseudo" class="form-control" placeholder="Pseudo" required autofocus>
-
-        <label for="password" class="sr-only">Password</label>
-
-        <input name="password" type="password" id="password" class="form-control" placeholder="Password" required>
-          <br>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-      </form>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input name="password" type="password" id="password" class="form-control" required>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+        </form>
+      </div>
 
     </div>
 {% endblock %}

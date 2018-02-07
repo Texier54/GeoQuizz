@@ -1,5 +1,15 @@
 {% extends "layout.html.twig" %}
 
+{% block flash %}
+    {% if flash() %}
+        <ul class="alert alert-danger">
+            {% for msg in flash() %}
+                <li>{{ msg[0] }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+{% endblock %}
+
 {% block body %}
 
 <!-- Page Content -->
@@ -8,17 +18,17 @@
             <div class="col-md-6">
                 <form class="form-signin" action="" method="POST">
                     <div class="form-group">
-                        <label for="ville">Ville</label>
-                        <input type="text" class="form-control" id="ville" name="ville">
+                        <label for="ville">Ville*</label>
+                        <input type="text" class="form-control" id="ville" name="ville" required>
                     </div>
                     <div class="form-group">
-                        <label for="longitude">Longitude</label>
-                        <input type="text" class="form-control" id="longitude" value="" name="longitude">
+                        <label for="longitude">Longitude*</label>
+                        <input type="text" class="form-control" id="longitude" value="" name="longitude" required>
                         <small id="help" class="form-text text-muted">Define it in the center of the wanted city.</small>
                     </div>
                     <div class="form-group">
-                        <label for="latitude">Latitude</label>
-                        <input type="text" class="form-control" id="latitude" value="" name="latitude">
+                        <label for="latitude">Latitude*</label>
+                        <input type="text" class="form-control" id="latitude" value="" name="latitude" required>
                         <small id="help" class="form-text text-muted">Define it in the center of the wanted city.</small>
                     </div>
                     <div class="form-group">
