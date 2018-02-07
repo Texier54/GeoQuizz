@@ -19,7 +19,7 @@
         </section>
 
         <footer class="modal-card-foot">
-          <router-link class="button is-success" :to="{ name:'partie', params : { pseudo : pseudo, serie : serie } }">Lancer</router-link>
+          <button class="button is-success" @click="start">Lancer</button>
           <button class="button" @click="fermer">Cancel</button>
         </footer>
 
@@ -47,11 +47,15 @@ export default {
   methods : {
     fermer() {
       this.lancer = false;
-    }
+    },
+    start() {
+
+      if(this.pseudo != '')
+        this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie } });
+    },
   },
 
   mounted() {
-
 
     if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
       this.$store.commit('setPartie', false);
