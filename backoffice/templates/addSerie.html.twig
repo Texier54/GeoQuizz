@@ -32,9 +32,27 @@
                         <small id="help" class="form-text text-muted">Define it in the center of the wanted city.</small>
                     </div>
                     <div class="form-group">
+                        <label for="temps">Temps*</label>
+                        <input type="number" class="form-control" id="temps" value="" name="temps" required>
+                        <small id="help" class="form-text text-muted">Temps de chaque photo en seconde.</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="distance">Distance*</label>
+                        <input type="number" class="form-control" id="distance" value="" name="distance" required>
+                        <small id="help" class="form-text text-muted">Distance en métre pour le calcul de points.</small>
+                    </div>
+                    <div class="form-group">
                         <label for="zoom">Zoom</label>
                         <select class="form-control" id="zoom" name="zoom">
-                            <option>16</option>
+                            <option>10</option>
+                            <option>11</option>
+                            <option>12</option>
+                            <option>13</option>
+                            <option>14</option>
+                            <option>15</option>
+                            <option selected>16</option>
+                            <option>17</option>
+                            <option>18</option>
                         </select>
                     </div>
                     <input type="submit" class="btn btn-primary"/>
