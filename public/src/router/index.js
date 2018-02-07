@@ -9,7 +9,8 @@ export default new Router({
   routes: [
     {
       path: '/',
-      component: lancerPartie
+      component: lancerPartie,
+      name: 'lancerPartie',
     },
     {
       path: '/partie',

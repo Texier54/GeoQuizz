@@ -10,12 +10,12 @@ export default {
   components: {},
   data () {
     return {
-      choix() {
-
-      }
     }
   },
   methods : {
+    choix() {
+      window.bus.$emit('choixSerie', this.serie.id);
+    }
   }
 }
 </script>

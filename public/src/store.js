@@ -5,11 +5,11 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
 	state : {
-		token : false,
+		partie : false,
 	},
 	mutations : {
-		setToken(state,token) {
-			state.token = token;
+		setPartie(state,partie) {
+			state.partie = partie;
 		},
 		initialiseStore(state) {
 			if(localStorage.getItem('store')) {
@@ -18,8 +18,8 @@ export default new Vuex.Store({
 				);
 			}
 		},
-		getToken() {
-			return state.token;
+		getPartie() {
+			return state.partie;
 		},
 	},
 })

@@ -9,10 +9,9 @@
       <div class="columns">
 
         <div class="column is-7">
-          <div id="map">
+          <div v-show="!end" id="map">
           </div>
         </div>
-
 
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
@@ -25,18 +24,19 @@
           <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
 
           <div class="points is-size-4 has-text-weight-semibold">
-            <p class="score">Score : {{ score }}</p>
-            <p class="ptsgagne">+{{ newscore }}</p>
+            <p class="score">Score : {{ score }}  ( +{{ newscore }} ! )</p>
           </div>
 
           {{ progress }}s
-          <progress class="progress is-success" :value="progress" max="60">{{ progress }}</progress>
+          <progress class="progress is-success" :value="progress" :max="tempsMax">{{ progress }}</progress>
 
         </div>
 
       </div>
 
     </section>
+
+    <endgame :partie="partie" :end="end"></endgame>
 
   </div>
 
@@ -46,10 +46,11 @@
 <script>
 
 import NavBar from './navBar.vue'
+import endgame from './endgame.vue'
 
 export default {
   name: 'partie',
-  components: {NavBar},
+  components: {NavBar, endgame},
   data () {
     return {
       liste: '',
@@ -64,8 +65,12 @@ export default {
       marker: '',
       markerResult: '',
       photo: true,
-      progress: 60,
+      progress: 0,
       ville: '',
+      intervalProgress: '',
+      tempsMax: 0,
+      end: false,
+      partie: '',
     }
   },
 
@@ -86,41 +91,53 @@ export default {
       else if(this.progress <= 0)
         bonus = 0;
 
-      if(this.val<= 20) 
+      if(this.val<= this.liste['serie']['distance']) 
       {
         addscore = 5*bonus;
       }
-      else if (this.val<= 30)
+      else if (this.val<= this.liste['serie']['distance']*2)
       {
         addscore = 4*bonus;
       }
-      else if (this.val<= 40)
+      else if (this.val<= this.liste['serie']['distance']*3)
       {
         addscore = 2*bonus;
       }
-      else if (this.val<= 50)
+      else
       {
-        addscore = 1*bonus;
+        addscore = 0;
       }
 
       this.score = this.score+addscore;
       this.newscore = addscore;
+      clearInterval(this.intervalProgress);
+      this.tempsMax = this.liste['serie']['temps']
+      this.progress = this.liste['serie']['temps'];
+
+      let imageNombre = this.nombre;
+      if(this.btn_suiv == true)
+        imageNombre = this.nombre+1;
+
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
 
     },
 
     suivant() {
-      window.bus.$emit('removeMarker');      
-      this.nombre = this.nombre+1;
+      window.bus.$emit('removeMarker');
       this.newscore = 0;
-      this.progress = 60;
-      if(this.nombre > this.liste['image'].length-1)
+      if(this.nombre+1 > this.liste['image'].length-1)
       {
+        this.end = true;
+        this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score};
+        this.$store.commit('setPartie', false);
+        clearInterval(this.intervalProgress);
         this.photo = false;
         this.btn_suiv = false;
-        window.axios.put('partie',{
 
-          token : this.token,
-          score : this.score
+        window.axios.put('partie/'+this.token,{
+
+          score : this.score,
+          etat: 2
 
         }).then((response) => {
 
@@ -132,6 +149,9 @@ export default {
       }
       else
       {
+        this.progress = this.liste['serie']['temps'];
+        this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+        this.nombre = this.nombre+1;
         this.img = this.liste['image'][this.nombre]['url'];
         this.btn_suiv = false;
       }
@@ -142,25 +162,25 @@ export default {
   mounted() {
 
     var map = '';
-    var intervalProgress = '';
-    
-    window.axios.post('partie',{
 
-      pseudo : this.$route.params.pseudo
+    if(this.$store.state.partie !== false && typeof this.$route.params.pseudo === 'undefined')
+    {
 
-    }).then((response) => {
-
-      this.liste = response.data;
+      this.liste = this.$store.state.partie;
       this.ville = this.liste['serie']['ville'];
-      this.img = this.liste['image'][0]['url'];
+      this.nombre = this.liste['imageNombre'];
+      this.img = this.liste['image'][this.nombre]['url'];
       this.token = this.liste['token'];
+      this.progress = this.liste['progress'];
+      this.tempsMax = this.liste['serie']['temps'];
+      this.score = this.liste['score']
       let lat = this.liste['serie']['latitude'];
       let lng = this.liste['serie']['longitude'];
+      let zoom = this.liste['serie']['zoom'];
 
-          map = L.map('map', {
-          center: [lat, lng],
-          zoom: 16,
-
+      map = L.map('map', {
+      center: [lat, lng],
+      zoom: zoom,
       });
 
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
@@ -174,14 +194,54 @@ export default {
         window.bus.$emit('updateCoord');
       });
 
-      intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+      this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
 
-    }).catch((error) => {
+    }
+    else
+    {
+    
+      window.axios.post('partie',{
 
-      console.log(error);
+        serie_id : this.$route.params.serie,
+        pseudo : this.$route.params.pseudo
 
-    });
+      }).then((response) => {
 
+        this.liste = response.data;
+        this.ville = this.liste['serie']['ville'];
+        this.img = this.liste['image'][0]['url'];
+        this.token = this.liste['token'];
+        this.progress = this.liste['serie']['temps'];
+        this.tempsMax = this.liste['serie']['temps'];
+        let lat = this.liste['serie']['latitude'];
+        let lng = this.liste['serie']['longitude'];
+        let zoom = this.liste['serie']['zoom'];
+
+        map = L.map('map', {
+        center: [lat, lng],
+        zoom: zoom,
+        });
+
+        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+            minZoom: 1,
+            maxZoom: 16
+        }).addTo(map);
+
+        map.on('click', function(ev) {
+          temp = ev.latlng;
+          window.bus.$emit('updateCoord');
+        });
+
+        this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+
+      }).catch((error) => {
+
+        console.log(error);
+
+      });
+
+    }
 
 
     function deg2rad(x){
@@ -229,7 +289,15 @@ export default {
       this.progress = this.progress-1;
       console.log(this.progress);
       if(this.progress <= 0)
-        clearInterval(intervalProgress);
+      {
+        clearInterval(this.intervalProgress);
+        this.btn_suiv = true;
+      }
+      let imageNombre = this.nombre;
+      if(this.btn_suiv == true)
+        imageNombre = this.nombre+1;
+
+      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
     });
 
 
@@ -256,6 +324,39 @@ export default {
       else
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
     });
+
+
+    window.bus.$on('quitterPartie',() => {
+
+      window.axios.put('partie/'+this.token,{
+
+        score : 1,
+        etat: 3
+
+      }).then((response) => {
+
+        clearInterval(this.intervalProgress);
+        this.$store.commit('setPartie', false);
+        this.$router.push({ path: 'lancerPartie'});
+
+      }).catch((error) => {
+
+        console.log(error);
+
+      });
+    });
+
+    window.bus.$on('suspendrePartie',() => {
+      clearInterval(this.intervalProgress);
+      let imageNombre = this.nombre;
+      if(this.btn_suiv == true)
+        imageNombre = this.nombre+1;
+
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$router.push({ path: 'lancerPartie'});
+
+    });
+
 
   }
 }
@@ -309,6 +410,7 @@ body {
   border: solid #363636 2px;
   border-radius: 10px;
   padding-left: 5px;
+  margin-bottom: 32px;
 }
 
 

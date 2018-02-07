@@ -94,12 +94,13 @@
 				$partie->status = 1;
 				$partie->score = 0;
 				$partie->nb_photos = 10;
+				$partie->id_serie = $parsedBody['serie_id'];
 
 				$photo = new photo();
-				$photo = $photo->where('id_serie', '=', 1)->select('id', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit(10)->get();
+				$photo = $photo->where('id_serie', '=', $parsedBody['serie_id'])->select('id', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit(10)->get();
 
 				$serie = new serie();
-				$serie = $serie->where('id', '=', 1)->first();
+				$serie = $serie->where('id', '=', $parsedBody['serie_id'])->first();
 
 				try {
 					$partie->save();
@@ -136,8 +137,8 @@
 				$parsedBody = $req->getParsedBody();
 
 				$partie = new partie();
-				$partie = $partie->where('token', '=', $parsedBody['token'])->first();
-				$partie->status = 2;
+				$partie = $partie->where('token', '=', $args['token'])->first();
+				$partie->status = $parsedBody['etat'];
 				$partie->score = $parsedBody['score'];
 
 				try {
@@ -148,7 +149,7 @@
 
 				$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
 
-				$resp= $resp->withStatus(201);
+				$resp= $resp->withStatus(200);
 
 				$tab = ['token' => $partie->token];
 
@@ -293,6 +294,5 @@
 
 			return $resp;
 		}
-
 
 	}

@@ -4,7 +4,7 @@
 
     <div class="navbar-brand">
       <a href="/" class="navbar-item">
-        <b>GeoQuizz</b>
+        <b class="is-size-2"><i class="marker fas fa-map-marker-alt"></i>GeoQuizz</b>
       </a>
       <button class="button navbar-burger btnreduc" data-target="navMenu">
         <span></span>
@@ -12,7 +12,8 @@
     </div>
 
     <div class="navbar-menu" id="navMenu">
-      <button class="navbar-end nav btn button is-danger">Quitter la partie</button>
+    <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5">Susprendre partie</button>
+      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
     </div>
 
   </nav>
@@ -53,28 +54,24 @@ export default {
 
   },
   methods : {
-    logOut() {
-      window.bus.$emit('logout');
+    quitter() {
+      window.bus.$emit('quitterPartie');
+    },
+
+    suspendre() {
+      window.bus.$emit('suspendrePartie');
     }
+
   }
 
 }
 </script>
 
 <style scoped>
-.router-link-exact-active {
-  background-color:#fff;
-  color: #1abc9c;
-}
-
-.navbar-item{
-  font-size: 30px;
-}
 
 .btn{
-  margin-top: 11px;
-  margin-right: 10px;
-  font-weight: bold;
+  margin-top: 12px;   /* A RENDRE PLUS PROPRE*/
+  margin-right: 10px; /* A RENDRE PLUS PROPRE*/
   -webkit-transition-property: color;
   -webkit-transition-duration: 0.5s;
   -moz-transition-property: color;
@@ -100,6 +97,11 @@ export default {
 }
 
 #navMenu{
-  background-color: #363636;
+  background-color: #363636; /* A ENLEVER */
 }
+
+.marker{
+  margin-right: 10px;
+}
+
 </style>
