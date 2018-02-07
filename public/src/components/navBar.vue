@@ -13,7 +13,7 @@
 
     <div class="navbar-menu" id="navMenu">
 
-      <button @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
+      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
     </div>
 
   </nav>

@@ -262,7 +262,7 @@ export default {
     window.bus.$on('quitterPartie',() => {
       window.axios.put('partie/'+this.token,{
 
-        score : 0,
+        score : 1,
         etat: 3
 
       }).then((response) => {
