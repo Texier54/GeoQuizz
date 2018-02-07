@@ -41,8 +41,8 @@ export default {
       val: '',
       img: '',
       nombre: 0,
-      btn_suiv: false,
-      btn_val:false,
+      btn_suiv: false, //afficher bouton suivant
+      btn_val:false, //afficher bouton validé
       score: 0,
       newscore: 0,
       token: '',
@@ -53,7 +53,7 @@ export default {
       ville: '',
       intervalProgress: '',
       tempsMax: 0,
-      end: false,
+      end: false, //modal endgame
       partie: '',
       pseudo: '',
     }
@@ -230,8 +230,13 @@ export default {
 
     }
 
-    var temp;
+    let temp;
 
+    /********************************
+    *            Emits              *
+    ********************************/
+
+    //Appelé lors du click sur la map
     window.bus.$on('updateCoord',() => {
 
       if(this.btn_suiv == false)
@@ -245,8 +250,7 @@ export default {
       }
     });
 
-
-
+    //Appelé à chaque secondes du timer (intervalProgress)
     window.bus.$on('updateProgress',() => {
       this.progress = this.progress-1;
       console.log(this.progress);
@@ -262,22 +266,24 @@ export default {
       this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
     });
 
-
+    //Appelé pour supprimer les markers de la map
     window.bus.$on('removeMarker',() => {
       map.removeLayer(this.marker);
       map.removeLayer(this.markerResult);
     });
   
-    var greenIcon = new L.Icon({
-      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
-
+    //Appelé pour ajouter le marker qui montre le bon emplacement de la photo
     window.bus.$on('addMarkerResult',() => {
+
+      let greenIcon = new L.Icon({
+        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
       if(this.val<=20)
       {
         map.removeLayer(this.marker);
@@ -287,7 +293,7 @@ export default {
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
     });
 
-
+    //Appelé pour supprimer la partie et quitter
     window.bus.$on('quitterPartie',() => {
 
       window.axios.put('partie/'+this.token,{
@@ -308,6 +314,7 @@ export default {
       });
     });
 
+    //Appelé pour save la partie et quitter
     window.bus.$on('suspendrePartie',() => {
       clearInterval(this.intervalProgress);
       let imageNombre = this.nombre;
