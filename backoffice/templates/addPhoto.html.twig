@@ -8,7 +8,7 @@
       <!-- Jumbotron Header -->
       <header class="jumbotron my-4">
         <h1 class="display-3">Serie de {{data.ville}}</h1>
-        <button type="button" class="btn btn-success"><a href="{{ path_for('addPhoto', { 'id': data.id }) }}">Ajouter photo</a></button>
+        <a href="{{ path_for('addPhoto', { 'id': data.id }) }}"><button type="button" class="btn btn-success">Ajouter photo</button></a>
       </header>
 
       <!-- Page Features -->
@@ -29,7 +29,7 @@
                   <label for="url">Url</label>
                   <input type="text" class="form-control" id="url" name="url">
                   <small id="help" class="form-text text-muted">Enter URL of the image taken from the internet. <br/>
-                    <button type="button" class="btn btn-default"><a href="https://prnt.sc">Upload your own?</a></button>
+                    <a href="https://prnt.sc"><button type="button" class="btn btn-default">Upload your own?</button></a>
                   </small>
               </div>
               <div class="form-group">
