@@ -96,9 +96,11 @@ $app->get('/addSerie', function ($request, $response, $args) {
 
 /*     Validator     */
 $validateAddSerie = [
+    'ville'    => v::StringType()->length(3,30)->notEmpty(),
     'longitude'    => v::floatVal()->notEmpty(),
     'latitude'    => v::floatVal()->notEmpty(),
-    'ville'    => v::StringType()->length(3,30)->notEmpty(),
+    'temps'    => v::positive()->notEmpty(),
+    'distance'    => v::positive()->notEmpty(),
     'zoom'    => v::StringType()->intVal()->notEmpty()
 ];
 
@@ -106,9 +108,11 @@ $app->post('/addSerie', function ($request, $response, $args) {
 
     if ($request->getAttribute( 'has_errors' )) {
 
+        $this->flash->addMessage('ville', 'Ville needs to be a string 3 to 30 characters long.');
         $this->flash->addMessage('longitude', 'Longitude needs to be a float value.');
         $this->flash->addMessage('latitude', 'Latitude needs to be a float value.');
-        $this->flash->addMessage('ville', 'Ville needs to be a string 3 to 30 characters long.');
+        $this->flash->addMessage('temps', 'Temps needs to be a positive integer.');
+        $this->flash->addMessage('distance', 'Distance needs to be a positive integer.');
         $this->flash->addMessage('zoom', 'Zoom needs to be an integer.');
 
         return $response->withRedirect($this->router->pathFor('addSerie'), 302);
@@ -119,13 +123,16 @@ $app->post('/addSerie', function ($request, $response, $args) {
     $serie = new \geoquizz\common\models\Serie();
 
     if( isset($parsedBody['longitude']) && isset($parsedBody['latitude']) &&
-        isset($parsedBody['ville']) && isset($parsedBody['zoom'])
+        isset($parsedBody['ville']) && isset($parsedBody['zoom']) &&
+        isset($parsedBody['temps']) && isset($parsedBody['distance']) 
     )
     {
 		$serie->ville = $parsedBody['ville'];
 		$serie->zoom = $parsedBody['zoom'];
 		$serie->longitude = $parsedBody['longitude'];
 		$serie->latitude = $parsedBody['latitude'];
+		$serie->temps = $parsedBody['temps'];
+		$serie->distance = $parsedBody['distance'];
 		try {
 			$serie->save();
 		} catch(\Exception $e) {
