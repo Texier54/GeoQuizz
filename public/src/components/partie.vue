@@ -1,52 +1,36 @@
 <template>
-
   <div>
-
     <nav-bar></nav-bar>
-
     <section class="container">
-
       <div class="columns">
-
         <div class="column is-7">
           <div v-show="!end" id="map">
           </div>
         </div>
-
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
-
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-">{{ ville }}</p>
           </div>
-
           <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
           <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
-
           <div class="points is-size-4 has-text-weight-semibold">
             <p class="score">Score : {{ score }}  ( +{{ newscore }} ! )</p>
           </div>
-
           {{ progress }}s
           <progress class="progress is-success" :value="progress" :max="tempsMax">{{ progress }}</progress>
-
         </div>
-
       </div>
-
     </section>
-
     <endgame :partie="partie" :end="end"></endgame>
-
   </div>
-
-
 </template>
 
 <script>
 
 import NavBar from './navBar.vue'
 import endgame from './endgame.vue'
+
 
 export default {
   name: 'partie',
@@ -71,6 +55,7 @@ export default {
       tempsMax: 0,
       end: false,
       partie: '',
+      pseudo: '',
     }
   },
 
@@ -118,7 +103,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
 
     },
 
@@ -128,7 +113,7 @@ export default {
       if(this.nombre+1 > this.liste['image'].length-1)
       {
         this.end = true;
-        this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score};
+        this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score, token : this.token, pseudo : this.pseudo};
         this.$store.commit('setPartie', false);
         clearInterval(this.intervalProgress);
         this.photo = false;
@@ -173,7 +158,8 @@ export default {
       this.token = this.liste['token'];
       this.progress = this.liste['progress'];
       this.tempsMax = this.liste['serie']['temps'];
-      this.score = this.liste['score']
+      this.score = this.liste['score'];
+      this.pseudo = this.liste['pseudo'];
       let lat = this.liste['serie']['latitude'];
       let lng = this.liste['serie']['longitude'];
       let zoom = this.liste['serie']['zoom'];
@@ -213,6 +199,7 @@ export default {
         this.token = this.liste['token'];
         this.progress = this.liste['serie']['temps'];
         this.tempsMax = this.liste['serie']['temps'];
+        this.pseudo = this.$route.params.pseudo;
         let lat = this.liste['serie']['latitude'];
         let lng = this.liste['serie']['longitude'];
         let zoom = this.liste['serie']['zoom'];
@@ -243,32 +230,7 @@ export default {
 
     }
 
-
-    function deg2rad(x){
-      return Math.PI*x/180;
-    }
- 
-    function get_distance_m($lat1, $lng1, $lat2, $lng2) {
-      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-      var $rlo1 = deg2rad($lng1);    // CONVERSION
-      var $rla1 = deg2rad($lat1);
-      var $rlo2 = deg2rad($lng2);
-      var $rla2 = deg2rad($lat2);
-      var $dlo = ($rlo2 - $rlo1) / 2;
-      var $dla = ($rla2 - $rla1) / 2;
-      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
-    ));
-      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
-      return ($earth_radius * $d);
-    }
-
-
     var temp;
-
-    function precisionRound(number, precision) {
-      var factor = Math.pow(10, precision);
-      return Math.round(number * factor) / factor;
-    }
 
     window.bus.$on('updateCoord',() => {
 
@@ -297,7 +259,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
     });
 
 
@@ -352,12 +314,38 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
       this.$router.push({ path: 'lancerPartie'});
 
     });
 
 
+    /********************************
+    *         Functions             *
+    ********************************/
+
+    function deg2rad(x){
+      return Math.PI*x/180;
+    }
+
+    function get_distance_m($lat1, $lng1, $lat2, $lng2) {
+      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
+      var $rlo1 = deg2rad($lng1);    // CONVERSION
+      var $rla1 = deg2rad($lat1);
+      var $rlo2 = deg2rad($lng2);
+      var $rla2 = deg2rad($lat2);
+      var $dlo = ($rlo2 - $rlo1) / 2;
+      var $dla = ($rla2 - $rla1) / 2;
+      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
+    ));
+      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
+      return ($earth_radius * $d);
+    }
+
+    function precisionRound(number, precision) {
+      var factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+    }
   }
 }
 </script>

@@ -102,6 +102,4 @@ export default {
 .marker{
   margin-right: 10px;
 }
-
-
 </style>
