@@ -1,2 +1,8 @@
-icone save
+icone Suspendre partie
 design 60s
+tableau score (vérifier etat partie)
+difficulté
+
+supprimer photo avec serie
+check console (backoffice js)
+changer home accueil (backoffice)
