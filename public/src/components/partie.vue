@@ -25,8 +25,7 @@
           <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
 
           <div class="points is-size-4 has-text-weight-semibold">
-            <p class="score">Score : {{ score }}</p>
-            <p class="ptsgagne">+{{ newscore }}</p>
+            <p class="score">Score : {{ score }}  ( +{{ newscore }} ! )</p>
           </div>
 
           <progress class="progress is-success" :value="progress" max="60">{{ progress }}</progress>
@@ -284,6 +283,7 @@ body {
   border: solid #363636 2px;
   border-radius: 10px;
   padding-left: 5px;
+  margin-bottom: 32px;
 }
 
 
