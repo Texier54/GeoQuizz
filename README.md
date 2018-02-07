@@ -15,7 +15,7 @@ Nécéssite Composer
 Récupération du projet
 
 ```
-Clone le depot git — git clone https://github.com/Texier54/GeoQuizzh
+Clone le depot git — git clone https://github.com/Texier54/GeoQuizz
 ```
 
 ```
@@ -36,6 +36,10 @@ docker-compose start
 
 ```
 Dans /src composer install
+```
+
+```
+Dans /public npm install
 ```
 
 ```

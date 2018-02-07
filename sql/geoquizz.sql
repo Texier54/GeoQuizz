@@ -44,6 +44,7 @@ CREATE TABLE serie(
         latitude  Varchar (50) ,
         longitude Varchar (50) ,
         distance  Varchar (25) ,
+        temps  Varchar (25) ,
         zoom      Varchar (25) ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
