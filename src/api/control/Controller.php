@@ -96,7 +96,7 @@
 				$partie->nb_photos = 10;
 
 				$photo = new photo();
-				$photo = $photo->where('id_serie', '=', 1)->select('id', 'longitude', 'latitude', 'url')->get();
+				$photo = $photo->where('id_serie', '=', 1)->select('id', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit(10)->get();
 
 				$serie = new serie();
 				$serie = $serie->where('id', '=', 1)->first();

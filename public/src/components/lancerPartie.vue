@@ -38,8 +38,14 @@
         </header>
 
         <section class="modal-card-body">
-            <label class="label" id="pseudo">Pseudo</label>
-            <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
+          <label class="label" id="pseudo">Pseudo</label>
+          <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
+          <label class="label" for="ville">Ville :</label>
+          <div class="select">
+            <select id="ville">
+              <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
+            </select>
+          </div>
         </section>
 
         <footer class="modal-card-foot">
@@ -57,15 +63,18 @@
 <script>
 
 import NavBar from './navBar.vue'
-import tableauScore from './tableauScore.vue'
+
+import choixSerie from './choix-serie.vue'
 
 export default {
   name: 'lancerPartie',
-  components: {NavBar, tableauScore},
+  components: {NavBar, choixSerie},
+  
   data () {
     return {
       lancer: false,
       pseudo: '',
+      series: '',
     }
   },
   methods : {
@@ -75,6 +84,15 @@ export default {
     fermer() {
       this.lancer = false;
     }
+  },
+  mounted() {
+    window.axios.get('series').then((response) => {
+      this.series = response.data;
+    }).catch((error) => {
+
+      console.log(error);
+
+    });
   }
 }
 </script>

@@ -8,24 +8,21 @@
       <!-- Jumbotron Header -->
       <header class="jumbotron my-4">
         <h1 class="display-3">Serie de {{data.ville}}</h1>
+        <button type="button" class="btn btn-success"><a href="{{ path_for('addPhoto', { 'id': data.id }) }}">Ajouter photo</a></button>
       </header>
 
       <!-- Page Features -->
-      <div class="row text-center">
+      <div class="row text-center text-lg-left">
 
-	    <div class="col-lg-3 col-md-6 mb-4">
-	      <div class="card">
-	        <div class="card-body">
-            <h4 class="card-title"><a class="nav-link" href="{{ path_for('serie', { 'id': data.id }) }}">{{ data.ville }}</a></h4>
-            <hr>
-	          <p class="card-text">{{ data.longitude }}</p>
-	          <p class="card-text">{{ data.latitude }}</p>
-	        </div>
-	      </div>
-	    </div>
+      {% for photo in photos %}
 
+        <div class="col-lg-3 col-md-4 col-xs-6">
+            <h1>{{photo.nom}}</h1>
+            <img class="img-fluid img-thumbnail" src="{{photo.url}}" alt="{{photo.description}}"> 
+            <button type="button" class="btn btn-danger"><a href="{{ path_for('deletePhoto', { 'id': photo.id }) }}">Supprimer</a></button>
+        </div>
 
-
+      {% endfor %}
       </div>
       <!-- /.row -->
 

@@ -18,7 +18,7 @@
           <img class="img" :src="img" v-show="photo">
 
           <div class="is-size-3 has-text-centered has-text-weight-bold">
-            <p class="is-">NANCY</p>
+            <p class="is-">{{ ville }}</p>
           </div>
 
           <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
@@ -28,6 +28,7 @@
             <p class="score">Score : {{ score }}  ( +{{ newscore }} ! )</p>
           </div>
 
+          {{ progress }}s
           <progress class="progress is-success" :value="progress" max="60">{{ progress }}</progress>
 
         </div>
@@ -62,7 +63,8 @@ export default {
       marker: '',
       markerResult: '',
       photo: true,
-      progress: 0,
+      progress: 60,
+      ville: '',
     }
   },
 
@@ -73,20 +75,43 @@ export default {
       this.btn_suiv = true;
       window.bus.$emit('addMarkerResult');
 
-      if(this.val<= 20)
-        this.score = this.score+5;
+      let addscore = 0;
+      let bonus = 1;
+
+      if(this.progress >= 55)
+        bonus = 4;
+      else if(this.progress >= 50)
+        bonus = 2;
+      else if(this.progress <= 0)
+        bonus = 0;
+
+      if(this.val<= 20) 
+      {
+        addscore = 5*bonus;
+      }
       else if (this.val<= 30)
-        this.score = this.score+4;
+      {
+        addscore = 4*bonus;
+      }
       else if (this.val<= 40)
-        this.score = this.score+2;
+      {
+        addscore = 2*bonus;
+      }
       else if (this.val<= 50)
-        this.score = this.score+1;
+      {
+        addscore = 1*bonus;
+      }
+
+      this.score = this.score+addscore;
+      this.newscore = addscore;
 
     },
 
     suivant() {
       window.bus.$emit('removeMarker');      
       this.nombre = this.nombre+1;
+      this.newscore = 0;
+      this.progress = 60;
       if(this.nombre > this.liste['image'].length-1)
       {
         this.photo = false;
@@ -125,7 +150,7 @@ export default {
     }).then((response) => {
 
       this.liste = response.data;
-      //console.log(this.liste['image'][0]);
+      this.ville = this.liste['serie']['ville'];
       this.img = this.liste['image'][0]['url'];
       this.token = this.liste['token'];
       let lat = this.liste['serie']['latitude'];
@@ -148,7 +173,7 @@ export default {
         window.bus.$emit('updateCoord');
       });
 
-      intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 100);
+      intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
 
     }).catch((error) => {
 
@@ -200,9 +225,9 @@ export default {
 
 
     window.bus.$on('updateProgress',() => {
-      this.progress = this.progress+1;
+      this.progress = this.progress-1;
       console.log(this.progress);
-      if(this.progress >= 60)
+      if(this.progress <= 0)
         clearInterval(intervalProgress);
     });
 

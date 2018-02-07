@@ -27,3 +27,14 @@ a:hover {
 a:click {
 	color: black;
 }
+
+img {
+	display: block;
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
+
+button {
+	margin-top: 15px;
+	margin-bottom: 15px;
+}
