@@ -13,7 +13,9 @@
     "axios": "^0.17.1",
     "js-md5": "^0.7.3",
     "vue": "^2.5.2",
+    "vue-radial-progress": "^0.2.10",
     "vue-router": "^3.0.1",
+    "vue2-circle-progress": "^1.2.1",
     "vue2-leaflet": "0.0.58",
     "vuex": "^3.0.1"
   },
