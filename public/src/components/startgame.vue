@@ -6,7 +6,6 @@
           <p class="modal-card-title">Lancer une partie</p>
           <button class="delete" @click="fermer" aria-label="close"></button>
         </header>
-
         <section class="modal-card-body">
           <label class="label" for="pseudo">Pseudo</label>
           <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
@@ -17,19 +16,14 @@
             </select>
           </div>
           <label class="label" for="difficulte">Difficulté :</label>
-
           <choix-difficulte></choix-difficulte>
-
           <label class="label" for="nombre">Nombre d'images 5-20 :</label>
           <input class="input" id="nombre" type="number" v-model="nombre">
-
         </section>
-
         <footer class="modal-card-foot">
           <button class="button is-success" @click="start">Lancer</button>
           <button class="button" @click="fermer">Cancel</button>
         </footer>
-
       </div>
     </div>
 </template>
@@ -59,7 +53,6 @@ export default {
       this.lancer = false;
     },
     start() {
-
       if(this.pseudo != '' && this.nombre >= 5 && this.nombre <= 20)
         this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie, difficulte : this.difficulte, nb_photos : this.nombre } });
     },
@@ -82,9 +75,7 @@ export default {
       this.series = response.data;
       this.serie = this.series[0]['id'];
     }).catch((error) => {
-
       console.log(error);
-
     });
 
   }

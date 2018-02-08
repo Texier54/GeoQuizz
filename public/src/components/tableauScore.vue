@@ -1,8 +1,5 @@
 <template>
-
   <div class="columns is-multiline end">
-
-    <!-- DATA -->
     <div class="column is-size-5 is-capitalized has-text-centered data">
       {{ tableau.joueur }}
     </div>
@@ -21,9 +18,7 @@
     <div class="column is-size-5 has-text-centered data">
      {{ tableau.created_at }}
     </div>
-    <!-- FIN DATA -->
   </div>
-
 </template>
 
 <script>

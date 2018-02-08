@@ -9,6 +9,10 @@
         </div>
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
+          <div>
+            <p>{{ aide }}</p>
+            <p>{{ description }}</p>
+          </div>
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-">{{ ville }}</p>
           </div>
@@ -37,7 +41,7 @@ export default {
   components: {NavBar, endgame},
   data () {
     return {
-      liste: '',
+      liste: '', //stock toutes les infos pour le jeu
       val: '',
       img: '',
       nombre: 0,
@@ -57,8 +61,10 @@ export default {
       partie: '',
       pseudo: '',
       difficulte: 0,
-      map: '',
-      temp: '',
+      map: '', //stock la map
+      temp: '', //stock les coords d'un marker
+      aide: '',
+      description: '',
     }
   },
 
@@ -73,12 +79,10 @@ export default {
       return Math.PI*x/180;
     },
 
-
     precisionRound(number, precision) {
       let factor = Math.pow(10, precision);
       return Math.round(number * factor) / factor;
     },
-
 
     get_distance_m($lat1, $lng1, $lat2, $lng2) {
       let $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
@@ -102,6 +106,8 @@ export default {
         clearInterval(this.intervalProgress);
         this.btn_suiv = true;
       }
+      else if (this.progress <= 5)
+        this.aide = this.liste['image'][this.nombre]['nom'];
       let imageNombre = this.nombre;
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
@@ -112,7 +118,8 @@ export default {
     valider() {
       this.btn_val = false;
       this.btn_suiv = true;
-
+      this.aide = this.liste['image'][this.nombre]['nom'];
+      this.description = this.liste['image'][this.nombre]['description'];
       let greenIcon = new L.Icon({
         iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -172,6 +179,8 @@ export default {
     },
 
     suivant() {
+      this.aide = '';
+      this.description = '';
       this.map.removeLayer(this.marker);
       if(this.markerResult !== '')
         this.map.removeLayer(this.markerResult);
@@ -254,6 +263,7 @@ export default {
       this.progress = Math.round(this.liste['progress']);
       this.img = this.liste['image'][this.nombre]['url'];
       this.difficulte = this.liste['difficulte'];
+      this.ville = this.liste['liste']['serie']['ville'];
       this.createMap();
     }
     else
@@ -271,6 +281,7 @@ export default {
         this.difficulte = this.$route.params.difficulte;
         this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
         this.img = this.liste['image'][0]['url'];
+        this.ville = this.liste['serie']['ville'];
         this.createMap();
 
       }).catch((error) => {

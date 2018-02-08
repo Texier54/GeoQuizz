@@ -13,3 +13,4 @@ readme (trello)*
 api doc
 commentaire backoffice
 grille dans popup
+style aide partie

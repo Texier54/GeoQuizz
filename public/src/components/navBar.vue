@@ -1,7 +1,5 @@
 <template>
-    
   <nav class="navbar is-dark">
-
     <div class="navbar-brand">
       <a href="/" class="navbar-item">
         <b class="is-size-2"><i class="marker fas fa-map-marker-alt"></i>GeoQuizz</b>
@@ -10,14 +8,15 @@
         <span></span>
       </button>   
     </div>
-
     <div class="navbar-menu" id="navMenu">
-    <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5"><i class="marker fas fa-pause-circle "></i>Susprendre partie</button>
-      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5"><i class="marker fas fa-sign-out-alt "></i>Quitter la partie</button>
+      <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5"><i class="marker fas fa-pause-circle "></i>
+        Susprendre partie
+      </button>
+      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5"><i class="marker fas fa-sign-out-alt "></i>
+        Quitter la partie
+      </button>
     </div>
-
   </nav>
-
 </template>
 
 <script>
