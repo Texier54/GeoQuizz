@@ -32,6 +32,10 @@ Importation de la BDD /sql/geoquizz.sql
 ```
 
 ```
+Remplissage de la BDD /sql/data_phpmyadmin.sql ou /sql/data_adminer.sql
+```
+
+```
 Configuration du fichier src/conf/geoquizz.db.conf.ini
 ```
 
