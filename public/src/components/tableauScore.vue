@@ -19,7 +19,7 @@
           {{ tableau.difficulte }}
         </div>
         <div class="column is-size-5 has-text-centered data">
-         {{ tableau.date }}
+         {{ tableau.created_at }}
         </div>
         <!-- FIN DATA -->
       </div>
