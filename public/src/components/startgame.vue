@@ -11,7 +11,7 @@
           <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
           <div class="columns">
             <div class="column">
-              <label class="label ville" for="ville">Ville :</label>
+              <label class="label options" for="ville">Ville :</label>
               <div class="select">
                 <select id="ville">
                   <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
@@ -19,7 +19,7 @@
               </div>
             </div>
             <div class="column">
-              <label class="label ville" for="difficulte">Difficulté :</label>
+              <label class="label options" for="difficulte">Difficulté :</label>
               <choix-difficulte></choix-difficulte>
             </div>
           </div>
@@ -90,7 +90,7 @@ export default {
 
 <style scoped>
 
-.ville{
+.options{
   margin-top: 10px;
 }
 </style>
