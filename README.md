@@ -6,6 +6,13 @@ GeoQuizz est un jeu disponible sur ordinateur, tablette et téléphone. Le princ
 
 Ces instructions vous permettront d'obtenir une copie du projet opérationnel sur votre machine locale à des fins de développement et de test. Voir déploiement pour les notes sur la façon de déployer le projet sur un système actif.
 
+**Api du projet :** api.geoquizz.local:10080
+
+**Player du projet :** http://localhost:8080
+
+**Backeng de gestion :** backoffice.local:10081
+
+
 ### Prérequis
 
 Nécéssite Composer
