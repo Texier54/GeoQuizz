@@ -149,9 +149,10 @@ $app->post('/addSerie', function ($request, $response, $args) {
 
 $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
 
-    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+    $photo = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->delete();
 
-    $arr->delete();
+    $serie = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+    $serie->delete();
 
     return $response->withRedirect($this->router->pathFor('home'));
 
