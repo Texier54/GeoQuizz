@@ -10,11 +10,10 @@
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
           <div>
-            <p>{{ aide }}</p>
-            <p>{{ description }}</p>
+            <p class="is-size-5 has-text-weight-semibold has-text-centered">{{ aide }}</p>
           </div>
           <div class="is-size-3 has-text-centered has-text-weight-bold">
-            <p class="is-">{{ ville }}</p>
+            <p class="is-uppercase">{{ ville }}</p>
           </div>
           <button class="btn button is-success" v-show="btn_val" @click="valider"><i class="marker fas fa-check-circle"></i>VALIDER</button>
           <button class="btn button is-info" v-show="btn_suiv" @click="suivant"><i class="marker fas fa-angle-double-right"></i>SUIVANT</button>

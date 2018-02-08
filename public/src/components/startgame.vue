@@ -9,14 +9,20 @@
         <section class="modal-card-body">
           <label class="label" for="pseudo">Pseudo</label>
           <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
-          <label class="label ville" for="ville">Ville :</label>
-          <div class="select">
-            <select id="ville">
-              <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
-            </select>
+          <div class="columns">
+            <div class="column">
+              <label class="label ville" for="ville">Ville :</label>
+              <div class="select">
+                <select id="ville">
+                  <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
+                </select>
+              </div>
+            </div>
+            <div class="column">
+              <label class="label ville" for="difficulte">Difficulté :</label>
+              <choix-difficulte></choix-difficulte>
+            </div>
           </div>
-          <label class="label" for="difficulte">Difficulté :</label>
-          <choix-difficulte></choix-difficulte>
           <label class="label" for="nombre">Nombre d'images 5-20 :</label>
           <input class="input" id="nombre" type="number" v-model="nombre">
         </section>
