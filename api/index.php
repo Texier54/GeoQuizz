@@ -53,6 +53,9 @@ $app->get('/series/{id}', function (Request $req, Response $resp, $args) {
 /* Validator */
 $validatorsCreatePartie = [
     'pseudo' => v::notEmpty(),
+    'nb_photos' => v::notEmpty(),
+    'serie_id' => v::notEmpty(),
+    'difficulte' => v::notEmpty(),
 ];
 
 $app->get('/partie[/]', function (Request $req, Response $resp, $args) {

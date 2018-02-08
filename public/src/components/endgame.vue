@@ -5,19 +5,16 @@
         <header class="modal-card-head">
           <p class="modal-card-title">Sauvegarder partie</p>
         </header>
-
         <section class="modal-card-body">
           <b>Vous avez terminé</b><br>
           Ville : {{ partie.ville }}<br>
           Pseudo : {{ partie.pseudo }}<br>
           Votre score : {{ partie.score }}
         </section>
-
         <footer class="modal-card-foot">
           <router-link class="button is-success" :to="{ name:'lancerPartie' }">Oui</router-link>
           <button class="button is-danger" @click="noSave">Non</button>
         </footer>
-
       </div>
     </div>
 </template>

@@ -1,32 +1,23 @@
 <template>
-
   <div>
-
     <nav-bar></nav-bar>
-
     <section class="section coop-accueil">
-
       <nav class="panel">
-
         <p class="panel-heading is-size-4 has-text-weight-semibold has-text-info">
           Bienvenue sur GeoQuizz !!!
         </p>
-
         <div class="panel-block">
           <p class="control has-icons-left is-size-5">
             Un jeu amusant où tu dois positionner une photo sur la carte de ta ville sans te tromper et plus vite que les autres !
             Il est possible de choisir son niveau pour avoir plus de photos ou devoir être plus précis dans les réponses.
           </p>
         </div>
-
         <div class="has-text-centered is-marginless">
           <button class="button is-primary is-large is-capitalized has-text-weight-bold" @click="lancerPartie"><i class="marker fas fa-gamepad"></i>Lancer partie</button>
           <router-link v-show="this.$store.state.partie.save" class="button is-primary is-large is-capitalized has-text-weight-bold" :to="{ name:'partie', params : { partie : this.$store.state.partie } }"><i class="marker fas fa-gamepad"></i>Reprendre partie</router-link>
           <p class="is-size-5 has-text-centered has-text-weight-semibold" v-show="this.$store.state.partie"><i class="marker-warning fas fa-exclamation-triangle "></i>Recommencer une partie supprimera la sauvegarde<i class="marker-warning fas fa-exclamation-triangle "></i></p>
         </div>
-
       </nav>
-
       <div class="border">
         <div class="is-size-2 has-text-centered is-capitalized has-text-weight-bold">
           <p>Tableau des scores</p>
@@ -35,10 +26,7 @@
           <p>(Classé du meilleur score au moins bon)</p>
         </div>
       </div>
-
-
       <div class="columns is-multiline">
-        <!-- TITRE DES COLONNES -->
         <div class="column is-size-4 has-text-centered has-text-weight-semibold titre first">
           Pseudo
         </div>
@@ -60,13 +48,9 @@
       </div>
       <div class="end"></div>
       <tabScore v-for="tableau in tableaux" :tableau="tableau"></tabScore>
-    
     </section>
-
     <startgame :lancer="lancer"></startgame>
-
   </div>
-
 </template>
 
 <script>

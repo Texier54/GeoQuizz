@@ -1,29 +1,24 @@
 <template>
-
-      <div class="columns is-multiline end">
-
-        <!-- DATA -->
-        <div class="column is-size-5 is-capitalized has-text-centered data">
-          {{ tableau.joueur }}
-        </div>
-        <div class="column is-size-5 is-uppercase has-text-centered data">
-          {{ serie.ville }}
-        </div>
-        <div class="column is-size-5 has-text-centered data">
-          {{ tableau.score }}
-        </div>
-        <div class="column is-size-5 has-text-centered data">
-          {{ tableau.nb_photos }}
-        </div>
-        <div class="column is-size-5 has-text-centered data">
-          {{ tableau.difficulte }}
-        </div>
-        <div class="column is-size-5 has-text-centered data">
-         {{ tableau.created_at }}
-        </div>
-        <!-- FIN DATA -->
-      </div>
-
+  <div class="columns is-multiline end">
+    <div class="column is-size-5 is-capitalized has-text-centered data">
+      {{ tableau.joueur }}
+    </div>
+    <div class="column is-size-5 is-uppercase has-text-centered data">
+      {{ serie.ville }}
+    </div>
+    <div class="column is-size-5 has-text-centered data">
+      {{ tableau.score }}
+    </div>
+    <div class="column is-size-5 has-text-centered data">
+      {{ tableau.nb_photos }}
+    </div>
+    <div class="column is-size-5 has-text-centered data">
+      {{ tableau.difficulte }}
+    </div>
+    <div class="column is-size-5 has-text-centered data">
+     {{ tableau.created_at }}
+    </div>
+  </div>
 </template>
 
 <script>
@@ -43,6 +38,13 @@ export default {
     }).catch((error) => {
       console.log(error);
     });
+
+    if(this.tableau.difficulte == 1)
+      this.tableau.difficulte = 'Standard';
+    else if(this.tableau.difficulte == 0.8)
+      this.tableau.difficulte = 'Medium';
+    else if(this.tableau.difficulte == 0.6)
+      this.tableau.difficulte = 'Hard';
   }
 }
 </script>

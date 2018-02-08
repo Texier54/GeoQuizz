@@ -9,6 +9,10 @@
         </div>
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
+          <div>
+            <p>{{ aide }}</p>
+            <p>{{ description }}</p>
+          </div>
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-">{{ ville }}</p>
           </div>
@@ -37,7 +41,7 @@ export default {
   components: {NavBar, endgame},
   data () {
     return {
-      liste: '',
+      liste: '', //stock toutes les infos pour le jeu
       val: '',
       img: '',
       nombre: 0,
@@ -56,35 +60,102 @@ export default {
       end: false, //modal endgame
       partie: '',
       pseudo: '',
+      difficulte: 0,
+      map: '', //stock la map
+      temp: '', //stock les coords d'un marker
+      aide: '',
+      description: '',
     }
   },
 
   methods : {
 
+
+    /********************************
+    *         Functions             *
+    ********************************/
+
+    deg2rad(x){
+      return Math.PI*x/180;
+    },
+
+    precisionRound(number, precision) {
+      let factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+    },
+
+    get_distance_m($lat1, $lng1, $lat2, $lng2) {
+      let $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
+      let $rlo1 = this.deg2rad($lng1);    // CONVERSION
+      let $rla1 = this.deg2rad($lat1);
+      let $rlo2 = this.deg2rad($lng2);
+      let $rla2 = this.deg2rad($lat2);
+      let $dlo = ($rlo2 - $rlo1) / 2;
+      let $dla = ($rla2 - $rla1) / 2;
+      let $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
+    ));
+      let  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
+      return ($earth_radius * $d);
+    },
+
+    updateProgress() {
+      this.progress = this.progress-1;
+      console.log(this.progress);
+      if(this.progress <= 0)
+      {
+        clearInterval(this.intervalProgress);
+        this.btn_suiv = true;
+      }
+      else if (this.progress <= 5)
+        this.aide = this.liste['image'][this.nombre]['nom'];
+      let imageNombre = this.nombre;
+      if(this.btn_suiv == true)
+        imageNombre = this.nombre+1;
+
+      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
+    },
+
     valider() {
       this.btn_val = false;
       this.btn_suiv = true;
-      window.bus.$emit('addMarkerResult');
+      this.aide = this.liste['image'][this.nombre]['nom'];
+      this.description = this.liste['image'][this.nombre]['description'];
+      let greenIcon = new L.Icon({
+        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
+      if(this.val<= this.liste['serie']['distance']*this.difficulte)
+      {
+        this.map.removeLayer(this.marker);
+        this.marker = L.marker([this.temp.lat, this.temp.lng], {icon: greenIcon}).addTo(this.map);
+      }
+      else
+        this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(this.map);
 
       let addscore = 0;
       let bonus = 1;
 
-      if(this.progress >= 55)
+      if(this.progress >= this.tempsMax-5)
         bonus = 4;
-      else if(this.progress >= 50)
+      else if(this.progress >= this.tempsMax-10)
         bonus = 2;
       else if(this.progress <= 0)
         bonus = 0;
 
-      if(this.val<= this.liste['serie']['distance']) 
+      if(this.val<= this.liste['serie']['distance']*this.difficulte) 
       {
         addscore = 5*bonus;
       }
-      else if (this.val<= this.liste['serie']['distance']*2)
+      else if (this.val<= this.liste['serie']['distance']*2*this.difficulte)
       {
         addscore = 4*bonus;
       }
-      else if (this.val<= this.liste['serie']['distance']*3)
+      else if (this.val<= this.liste['serie']['distance']*3*this.difficulte)
       {
         addscore = 2*bonus;
       }
@@ -96,19 +167,23 @@ export default {
       this.score = this.score+addscore;
       this.newscore = addscore;
       clearInterval(this.intervalProgress);
-      this.tempsMax = this.liste['serie']['temps']
-      this.progress = this.liste['serie']['temps'];
+      this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
+      this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
 
       let imageNombre = this.nombre;
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
 
     },
 
     suivant() {
-      window.bus.$emit('removeMarker');
+      this.aide = '';
+      this.description = '';
+      this.map.removeLayer(this.marker);
+      if(this.markerResult !== '')
+        this.map.removeLayer(this.markerResult);
       this.newscore = 0;
       if(this.nombre+1 > this.liste['image'].length-1)
       {
@@ -120,187 +195,112 @@ export default {
         this.btn_suiv = false;
 
         window.axios.put('partie/'+this.token,{
-
           score : this.score,
           etat: 2
-
-        }).then((response) => {
-
         }).catch((error) => {
-
           console.log(error);
-
         });
       }
       else
       {
         this.progress = this.liste['serie']['temps'];
-        this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+        this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
         this.nombre = this.nombre+1;
         this.img = this.liste['image'][this.nombre]['url'];
         this.btn_suiv = false;
       }
 
-    }
-  },
+    },
 
-  mounted() {
+    createMap() {
 
-    var map = '';
-
-    if(this.$store.state.partie !== false && typeof this.$route.params.pseudo === 'undefined')
-    {
-
-      this.liste = this.$store.state.partie;
-      this.ville = this.liste['serie']['ville'];
-      this.nombre = this.liste['imageNombre'];
-      this.img = this.liste['image'][this.nombre]['url'];
       this.token = this.liste['token'];
-      this.progress = this.liste['progress'];
-      this.tempsMax = this.liste['serie']['temps'];
-      this.score = this.liste['score'];
       this.pseudo = this.liste['pseudo'];
-      let lat = this.liste['serie']['latitude'];
-      let lng = this.liste['serie']['longitude'];
-      let zoom = this.liste['serie']['zoom'];
+      this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
 
-      map = L.map('map', {
-      center: [lat, lng],
-      zoom: zoom,
+      this.map = L.map('map', {
+      center: [this.liste['serie']['latitude'], this.liste['serie']['longitude']],
+      zoom: this.liste['serie']['zoom'],
       });
 
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
           minZoom: 1,
           maxZoom: 16
-      }).addTo(map);
+      }).addTo(this.map);
 
-      map.on('click', function(ev) {
-        temp = ev.latlng;
-        window.bus.$emit('updateCoord');
+      this.map.on('click', (ev) => {
+        this.temp = ev.latlng;
+        if(this.btn_suiv == false)
+        {
+          if(this.marker != '')
+            this.map.removeLayer(this.marker);
+
+          this.val = this.precisionRound(this.get_distance_m(this.temp.lat, this.temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
+          this.btn_val = true;
+          this.marker = L.marker([this.temp.lat, this.temp.lng]).addTo(this.map);
+        }
       });
 
-      this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+      this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
 
+    }
+  },
+
+  mounted() {
+
+
+    /********************************
+    *       Lancement partie        *
+    ********************************/
+
+    //Verifie si une partie est save
+    if(this.$store.state.partie !== false && typeof this.$route.params.pseudo === 'undefined')
+    {
+      this.liste = this.$store.state.partie;
+      this.nombre = this.liste['imageNombre'];
+      this.score = this.liste['score'];
+      this.progress = Math.round(this.liste['progress']);
+      this.img = this.liste['image'][this.nombre]['url'];
+      this.difficulte = this.liste['difficulte'];
+      this.ville = this.liste['liste']['serie']['ville'];
+      this.createMap();
     }
     else
     {
-    
       window.axios.post('partie',{
 
         serie_id : this.$route.params.serie,
-        pseudo : this.$route.params.pseudo
+        pseudo : this.$route.params.pseudo,
+        difficulte: this.$route.params.difficulte,
+        nb_photos: this.$route.params.nb_photos
 
       }).then((response) => {
 
         this.liste = response.data;
-        this.ville = this.liste['serie']['ville'];
+        this.difficulte = this.$route.params.difficulte;
+        this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
         this.img = this.liste['image'][0]['url'];
-        this.token = this.liste['token'];
-        this.progress = this.liste['serie']['temps'];
-        this.tempsMax = this.liste['serie']['temps'];
-        this.pseudo = this.$route.params.pseudo;
-        let lat = this.liste['serie']['latitude'];
-        let lng = this.liste['serie']['longitude'];
-        let zoom = this.liste['serie']['zoom'];
-
-        map = L.map('map', {
-        center: [lat, lng],
-        zoom: zoom,
-        });
-
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            minZoom: 1,
-            maxZoom: 16
-        }).addTo(map);
-
-        map.on('click', function(ev) {
-          temp = ev.latlng;
-          window.bus.$emit('updateCoord');
-        });
-
-        this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+        this.ville = this.liste['serie']['ville'];
+        this.createMap();
 
       }).catch((error) => {
 
         console.log(error);
 
       });
-
     }
-
-    let temp;
 
     /********************************
     *            Emits              *
     ********************************/
 
-    //Appelé lors du click sur la map
-    window.bus.$on('updateCoord',() => {
-
-      if(this.btn_suiv == false)
-      {
-        if(this.marker != '')
-          map.removeLayer(this.marker);
-
-        this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
-        this.btn_val = true;
-        this.marker = L.marker([temp.lat, temp.lng]).addTo(map);
-      }
-    });
-
-    //Appelé à chaque secondes du timer (intervalProgress)
-    window.bus.$on('updateProgress',() => {
-      this.progress = this.progress-1;
-      console.log(this.progress);
-      if(this.progress <= 0)
-      {
-        clearInterval(this.intervalProgress);
-        this.btn_suiv = true;
-      }
-      let imageNombre = this.nombre;
-      if(this.btn_suiv == true)
-        imageNombre = this.nombre+1;
-
-      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
-    });
-
-    //Appelé pour supprimer les markers de la map
-    window.bus.$on('removeMarker',() => {
-      map.removeLayer(this.marker);
-      map.removeLayer(this.markerResult);
-    });
-  
-    //Appelé pour ajouter le marker qui montre le bon emplacement de la photo
-    window.bus.$on('addMarkerResult',() => {
-
-      let greenIcon = new L.Icon({
-        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      });
-
-      if(this.val<=20)
-      {
-        map.removeLayer(this.marker);
-        this.marker = L.marker([temp.lat, temp.lng], {icon: greenIcon}).addTo(map);
-      }
-      else
-        this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
-    });
-
     //Appelé pour supprimer la partie et quitter
     window.bus.$on('quitterPartie',() => {
 
       window.axios.put('partie/'+this.token,{
-
         score : 1,
         etat: 3
-
       }).then((response) => {
 
         clearInterval(this.intervalProgress);
@@ -308,9 +308,7 @@ export default {
         this.$router.push({ path: 'lancerPartie'});
 
       }).catch((error) => {
-
         console.log(error);
-
       });
     });
 
@@ -321,38 +319,11 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
       this.$router.push({ path: 'lancerPartie'});
 
     });
 
-
-    /********************************
-    *         Functions             *
-    ********************************/
-
-    function deg2rad(x){
-      return Math.PI*x/180;
-    }
-
-    function get_distance_m($lat1, $lng1, $lat2, $lng2) {
-      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-      var $rlo1 = deg2rad($lng1);    // CONVERSION
-      var $rla1 = deg2rad($lat1);
-      var $rlo2 = deg2rad($lng2);
-      var $rla2 = deg2rad($lat2);
-      var $dlo = ($rlo2 - $rlo1) / 2;
-      var $dla = ($rla2 - $rla1) / 2;
-      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
-    ));
-      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
-      return ($earth_radius * $d);
-    }
-
-    function precisionRound(number, precision) {
-      var factor = Math.pow(10, precision);
-      return Math.round(number * factor) / factor;
-    }
   }
 }
 </script>

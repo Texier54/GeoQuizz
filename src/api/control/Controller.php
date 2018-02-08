@@ -109,14 +109,15 @@
 
 				$partie = new partie();
 				$partie->token = Uuid::uuid1();
-				$partie->joueur = $parsedBody['pseudo'];
+				$partie->joueur = filter_var($parsedBody['pseudo'], FILTER_SANITIZE_STRING);
 				$partie->status = 1;
 				$partie->score = 0;
-				$partie->nb_photos = 10;
+				$partie->difficulte = $parsedBody['difficulte'];
+				$partie->nb_photos = $parsedBody['nb_photos'];
 				$partie->id_serie = $parsedBody['serie_id'];
 
 				$photo = new photo();
-				$photo = $photo->where('id_serie', '=', $parsedBody['serie_id'])->select('id', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit(10)->get();
+				$photo = $photo->where('id_serie', '=', $parsedBody['serie_id'])->select('id', 'nom', 'description', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit(10)->get();
 
 				$serie = new serie();
 				$serie = $serie->where('id', '=', $parsedBody['serie_id'])->first();
