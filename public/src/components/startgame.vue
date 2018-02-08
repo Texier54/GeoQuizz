@@ -16,6 +16,8 @@
               <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
             </select>
           </div>
+          <label class="label" for="difficulte">Difficulté :</label>
+          <choix-difficulte></choix-difficulte>
         </section>
 
         <footer class="modal-card-foot">
@@ -30,17 +32,19 @@
 <script>
 
 import choixSerie from './choix-serie.vue'
+import choixDifficulte from './choix-difficulte.vue'
 
 export default {
   props : ['lancer'],
   name: 'startgame',
-  components: {choixSerie},
+  components: {choixSerie, choixDifficulte},
 
   data () {
     return {
       pseudo: '',
       series: '',
       serie: '',
+      difficulte: 1,
     }
   },
 
@@ -51,11 +55,19 @@ export default {
     start() {
 
       if(this.pseudo != '')
-        this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie } });
+        this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie, difficulte : this.difficulte } });
     },
   },
 
   mounted() {
+
+    window.bus.$on('choixSerie',(id) => {
+      this.serie = id;
+    });
+
+    window.bus.$on('choixDifficulte',(nb) => {
+      this.difficulte = nb;
+    });
 
     if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
       this.$store.commit('setPartie', false);
@@ -67,12 +79,6 @@ export default {
 
       console.log(error);
 
-    });
-
-    window.bus.$on('choixSerie',(id) => {
-
-      this.serie = id;
-      
     });
 
 

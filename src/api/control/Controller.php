@@ -90,9 +90,10 @@
 
 				$partie = new partie();
 				$partie->token = Uuid::uuid1();
-				$partie->joueur = $parsedBody['pseudo'];
+				$partie->joueur = filter_var($parsedBody['pseudo'], FILTER_SANITIZE_STRING);
 				$partie->status = 1;
 				$partie->score = 0;
+				$partie->difficulte = $parsedBody['difficulte'];
 				$partie->nb_photos = 10;
 				$partie->id_serie = $parsedBody['serie_id'];
 

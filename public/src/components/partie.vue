@@ -103,7 +103,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
 
     },
 
@@ -160,6 +160,7 @@ export default {
       this.tempsMax = this.liste['serie']['temps'];
       this.score = this.liste['score'];
       this.pseudo = this.liste['pseudo'];
+      this.difficulte = this.liste['difficulte'];
       let lat = this.liste['serie']['latitude'];
       let lng = this.liste['serie']['longitude'];
       let zoom = this.liste['serie']['zoom'];
@@ -189,7 +190,8 @@ export default {
       window.axios.post('partie',{
 
         serie_id : this.$route.params.serie,
-        pseudo : this.$route.params.pseudo
+        pseudo : this.$route.params.pseudo,
+        difficulte: this.$route.params.difficulte
 
       }).then((response) => {
 
@@ -200,6 +202,7 @@ export default {
         this.progress = this.liste['serie']['temps'];
         this.tempsMax = this.liste['serie']['temps'];
         this.pseudo = this.$route.params.pseudo;
+        this.difficulte = this.$route.params.difficulte;
         let lat = this.liste['serie']['latitude'];
         let lng = this.liste['serie']['longitude'];
         let zoom = this.liste['serie']['zoom'];
@@ -263,7 +266,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
+      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
     });
 
     //Appelé pour supprimer les markers de la map
@@ -321,7 +324,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
       this.$router.push({ path: 'lancerPartie'});
 
     });
