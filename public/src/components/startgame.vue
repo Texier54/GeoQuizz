@@ -18,7 +18,11 @@
           </div>
           <label class="label" for="difficulte">Difficulté :</label>
           <choix-difficulte></choix-difficulte>
-          <choix-nombre></choix-nombre>
+          <div class="select">
+            <select id="ville">
+              <choix-nombre v-for="serie in series" :serie="serie"></choix-nombre>
+            </select>
+          </div>
         </section>
 
         <footer class="modal-card-foot">
@@ -34,11 +38,12 @@
 
 import choixSerie from './choix-serie.vue'
 import choixDifficulte from './choix-difficulte.vue'
+import choixNombre from './choix-nombre.vue'
 
 export default {
   props : ['lancer'],
   name: 'startgame',
-  components: {choixSerie, choixDifficulte},
+  components: {choixSerie, choixDifficulte, choixNombre},
 
   data () {
     return {
@@ -70,6 +75,11 @@ export default {
     window.bus.$on('choixDifficulte',(nb) => {
       this.difficulte = nb;
     });
+
+    window.bus.$on('choixImage',(nb) => {
+      this.nombre = nb;
+    });
+
 
     if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
       this.$store.commit('setPartie', false);

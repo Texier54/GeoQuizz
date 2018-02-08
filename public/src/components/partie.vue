@@ -220,12 +220,13 @@ export default {
             maxZoom: 16
         }).addTo(map);
 
-        map.on('click', function(ev) {
+        map.on('click', (ev) => {
+          console.log(this.liste);
           temp = ev.latlng;
           window.bus.$emit('updateCoord');
         });
 
-        this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+        this.intervalProgress = setInterval(() => { window.bus.$emit('updateProgress'); }, 1000);
 
       }).catch((error) => {
 

@@ -1,19 +1,19 @@
 <template>
-  <option @click="standard">Standard</option>
+  <option @click="nombreImages">{{ nb }}</option>
 </template>
 
 <script>
 
 export default {
+  props : ['nb'],
   name: 'choix-nombre',
-  components: {},
   data () {
     return {
     }
   },
   methods : {
-    standard() {
-      window.bus.$emit('choixDifficulte', 1);
+    nombreImages() {
+      window.bus.$emit('nombreImage', nb);
     },
   }
 }
