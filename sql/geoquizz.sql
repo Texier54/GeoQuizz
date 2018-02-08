@@ -61,6 +61,7 @@ CREATE TABLE partie(
         status    Varchar (25) ,
         score     Varchar (25) ,
         joueur    Varchar (255) ,
+	difficulte FLoat (11) ,
         id_serie Int ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;

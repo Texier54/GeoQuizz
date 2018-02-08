@@ -18,6 +18,7 @@
           </div>
           <label class="label" for="difficulte">Difficulté :</label>
           <choix-difficulte></choix-difficulte>
+          <choix-nombre></choix-nombre>
         </section>
 
         <footer class="modal-card-foot">
@@ -45,6 +46,7 @@ export default {
       series: '',
       serie: '',
       difficulte: 1,
+      nombre: 10,
     }
   },
 

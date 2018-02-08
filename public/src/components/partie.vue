@@ -56,6 +56,7 @@ export default {
       end: false, //modal endgame
       partie: '',
       pseudo: '',
+      difficulte: 0,
     }
   },
 
@@ -69,22 +70,22 @@ export default {
       let addscore = 0;
       let bonus = 1;
 
-      if(this.progress >= 55)
+      if(this.progress >= this.tempsMax-5)
         bonus = 4;
-      else if(this.progress >= 50)
+      else if(this.progress >= this.tempsMax-10)
         bonus = 2;
       else if(this.progress <= 0)
         bonus = 0;
 
-      if(this.val<= this.liste['serie']['distance']) 
+      if(this.val<= this.liste['serie']['distance']*this.difficulte) 
       {
         addscore = 5*bonus;
       }
-      else if (this.val<= this.liste['serie']['distance']*2)
+      else if (this.val<= this.liste['serie']['distance']*2*this.difficulte)
       {
         addscore = 4*bonus;
       }
-      else if (this.val<= this.liste['serie']['distance']*3)
+      else if (this.val<= this.liste['serie']['distance']*3*this.difficulte)
       {
         addscore = 2*bonus;
       }
@@ -96,8 +97,8 @@ export default {
       this.score = this.score+addscore;
       this.newscore = addscore;
       clearInterval(this.intervalProgress);
-      this.tempsMax = this.liste['serie']['temps']
-      this.progress = this.liste['serie']['temps'];
+      this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
+      this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
 
       let imageNombre = this.nombre;
       if(this.btn_suiv == true)
@@ -156,11 +157,11 @@ export default {
       this.nombre = this.liste['imageNombre'];
       this.img = this.liste['image'][this.nombre]['url'];
       this.token = this.liste['token'];
-      this.progress = this.liste['progress'];
-      this.tempsMax = this.liste['serie']['temps'];
+      this.difficulte = this.liste['difficulte'];
+      this.progress = Math.round(this.liste['progress']);
+      this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
       this.score = this.liste['score'];
       this.pseudo = this.liste['pseudo'];
-      this.difficulte = this.liste['difficulte'];
       let lat = this.liste['serie']['latitude'];
       let lng = this.liste['serie']['longitude'];
       let zoom = this.liste['serie']['zoom'];
@@ -199,10 +200,11 @@ export default {
         this.ville = this.liste['serie']['ville'];
         this.img = this.liste['image'][0]['url'];
         this.token = this.liste['token'];
-        this.progress = this.liste['serie']['temps'];
-        this.tempsMax = this.liste['serie']['temps'];
-        this.pseudo = this.$route.params.pseudo;
         this.difficulte = this.$route.params.difficulte;
+        this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
+        this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
+        console.log(this.tempsMax);
+        this.pseudo = this.$route.params.pseudo;
         let lat = this.liste['serie']['latitude'];
         let lng = this.liste['serie']['longitude'];
         let zoom = this.liste['serie']['zoom'];
@@ -287,7 +289,7 @@ export default {
         shadowSize: [41, 41]
       });
 
-      if(this.val<=20)
+      if(this.val<= this.liste['serie']['distance']*this.difficulte)
       {
         map.removeLayer(this.marker);
         this.marker = L.marker([temp.lat, temp.lng], {icon: greenIcon}).addTo(map);
