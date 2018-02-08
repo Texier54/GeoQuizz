@@ -2,6 +2,8 @@
 
 GeoQuizz est un jeu disponible sur ordinateur, tablette et téléphone. Le principe est simple : une photo est proposée au joueur, il doit indiquer la position de ce qu'elle représente sur une carte d'une ville.
 
+Trello : https://trello.com/b/uOqYzi1V/geoquizz
+
 ## Commencer
 
 Ces instructions vous permettront d'obtenir une copie du projet opérationnel sur votre machine locale à des fins de développement et de test. Voir déploiement pour les notes sur la façon de déployer le projet sur un système actif.
