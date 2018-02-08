@@ -1,6 +1,6 @@
-icone Suspendre partie
-design 60s
-tableau score (vérifier etat partie)
+icone Suspendre partie*
+design 60s*
+tableau score (vérifier etat partie)*
 difficulté
 date partie
 
