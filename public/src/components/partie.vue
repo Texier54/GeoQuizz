@@ -1,52 +1,36 @@
 <template>
-
   <div>
-
     <nav-bar></nav-bar>
-
     <section class="container">
-
       <div class="columns">
-
         <div class="column is-7">
           <div v-show="!end" id="map">
           </div>
         </div>
-
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
-
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-">{{ ville }}</p>
           </div>
-
-          <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
-          <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
-
+          <button class="btn button is-success" v-show="btn_val" @click="valider"><i class="marker fas fa-check-circle"></i>VALIDER</button>
+          <button class="btn button is-info" v-show="btn_suiv" @click="suivant"><i class="marker fas fa-angle-double-right"></i>SUIVANT</button>
           <div class="points is-size-4 has-text-weight-semibold">
             <p class="score">Score : {{ score }}  ( +{{ newscore }} ! )</p>
           </div>
-
-          {{ progress }}s
+          <p class="is-size-4 has-text-weight-semibold"><i class="marker fas fa-hourglass-half"></i>{{ progress }}s</p>
           <progress class="progress is-success" :value="progress" :max="tempsMax">{{ progress }}</progress>
-
         </div>
-
       </div>
-
     </section>
-
     <endgame :partie="partie" :end="end"></endgame>
-
   </div>
-
-
 </template>
 
 <script>
 
 import NavBar from './navBar.vue'
 import endgame from './endgame.vue'
+
 
 export default {
   name: 'partie',
@@ -57,8 +41,8 @@ export default {
       val: '',
       img: '',
       nombre: 0,
-      btn_suiv: false,
-      btn_val:false,
+      btn_suiv: false, //afficher bouton suivant
+      btn_val:false, //afficher bouton validé
       score: 0,
       newscore: 0,
       token: '',
@@ -69,8 +53,9 @@ export default {
       ville: '',
       intervalProgress: '',
       tempsMax: 0,
-      end: false,
+      end: false, //modal endgame
       partie: '',
+      pseudo: '',
     }
   },
 
@@ -118,7 +103,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
 
     },
 
@@ -128,7 +113,7 @@ export default {
       if(this.nombre+1 > this.liste['image'].length-1)
       {
         this.end = true;
-        this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score};
+        this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score, token : this.token, pseudo : this.pseudo};
         this.$store.commit('setPartie', false);
         clearInterval(this.intervalProgress);
         this.photo = false;
@@ -173,7 +158,8 @@ export default {
       this.token = this.liste['token'];
       this.progress = this.liste['progress'];
       this.tempsMax = this.liste['serie']['temps'];
-      this.score = this.liste['score']
+      this.score = this.liste['score'];
+      this.pseudo = this.liste['pseudo'];
       let lat = this.liste['serie']['latitude'];
       let lng = this.liste['serie']['longitude'];
       let zoom = this.liste['serie']['zoom'];
@@ -213,6 +199,7 @@ export default {
         this.token = this.liste['token'];
         this.progress = this.liste['serie']['temps'];
         this.tempsMax = this.liste['serie']['temps'];
+        this.pseudo = this.$route.params.pseudo;
         let lat = this.liste['serie']['latitude'];
         let lng = this.liste['serie']['longitude'];
         let zoom = this.liste['serie']['zoom'];
@@ -243,33 +230,13 @@ export default {
 
     }
 
+    let temp;
 
-    function deg2rad(x){
-      return Math.PI*x/180;
-    }
- 
-    function get_distance_m($lat1, $lng1, $lat2, $lng2) {
-      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-      var $rlo1 = deg2rad($lng1);    // CONVERSION
-      var $rla1 = deg2rad($lat1);
-      var $rlo2 = deg2rad($lng2);
-      var $rla2 = deg2rad($lat2);
-      var $dlo = ($rlo2 - $rlo1) / 2;
-      var $dla = ($rla2 - $rla1) / 2;
-      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
-    ));
-      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
-      return ($earth_radius * $d);
-    }
+    /********************************
+    *            Emits              *
+    ********************************/
 
-
-    var temp;
-
-    function precisionRound(number, precision) {
-      var factor = Math.pow(10, precision);
-      return Math.round(number * factor) / factor;
-    }
-
+    //Appelé lors du click sur la map
     window.bus.$on('updateCoord',() => {
 
       if(this.btn_suiv == false)
@@ -283,8 +250,7 @@ export default {
       }
     });
 
-
-
+    //Appelé à chaque secondes du timer (intervalProgress)
     window.bus.$on('updateProgress',() => {
       this.progress = this.progress-1;
       console.log(this.progress);
@@ -297,25 +263,27 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
     });
 
-
+    //Appelé pour supprimer les markers de la map
     window.bus.$on('removeMarker',() => {
       map.removeLayer(this.marker);
       map.removeLayer(this.markerResult);
     });
   
-    var greenIcon = new L.Icon({
-      iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-      shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-      iconSize: [25, 41],
-      iconAnchor: [12, 41],
-      popupAnchor: [1, -34],
-      shadowSize: [41, 41]
-    });
-
+    //Appelé pour ajouter le marker qui montre le bon emplacement de la photo
     window.bus.$on('addMarkerResult',() => {
+
+      let greenIcon = new L.Icon({
+        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
       if(this.val<=20)
       {
         map.removeLayer(this.marker);
@@ -325,7 +293,7 @@ export default {
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
     });
 
-
+    //Appelé pour supprimer la partie et quitter
     window.bus.$on('quitterPartie',() => {
 
       window.axios.put('partie/'+this.token,{
@@ -346,18 +314,45 @@ export default {
       });
     });
 
+    //Appelé pour save la partie et quitter
     window.bus.$on('suspendrePartie',() => {
       clearInterval(this.intervalProgress);
       let imageNombre = this.nombre;
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
-      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress });
+      this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo });
       this.$router.push({ path: 'lancerPartie'});
 
     });
 
 
+    /********************************
+    *         Functions             *
+    ********************************/
+
+    function deg2rad(x){
+      return Math.PI*x/180;
+    }
+
+    function get_distance_m($lat1, $lng1, $lat2, $lng2) {
+      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
+      var $rlo1 = deg2rad($lng1);    // CONVERSION
+      var $rla1 = deg2rad($lat1);
+      var $rlo2 = deg2rad($lng2);
+      var $rla2 = deg2rad($lat2);
+      var $dlo = ($rlo2 - $rlo1) / 2;
+      var $dla = ($rla2 - $rla1) / 2;
+      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
+    ));
+      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
+      return ($earth_radius * $d);
+    }
+
+    function precisionRound(number, precision) {
+      var factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+    }
   }
 }
 </script>
@@ -413,6 +408,8 @@ body {
   margin-bottom: 32px;
 }
 
-
+.marker{
+  margin-right: 10px;
+}
 
 </style>

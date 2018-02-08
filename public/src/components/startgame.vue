@@ -10,7 +10,7 @@
         <section class="modal-card-body">
           <label class="label" id="pseudo">Pseudo</label>
           <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
-          <label class="label" for="ville">Ville :</label>
+          <label class="label ville" for="ville">Ville :</label>
           <div class="select">
             <select id="ville">
               <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
@@ -19,7 +19,7 @@
         </section>
 
         <footer class="modal-card-foot">
-          <router-link class="button is-success" :to="{ name:'partie', params : { pseudo : pseudo, serie : serie } }">Lancer</router-link>
+          <button class="button is-success" @click="start">Lancer</button>
           <button class="button" @click="fermer">Cancel</button>
         </footer>
 
@@ -47,15 +47,16 @@ export default {
   methods : {
     fermer() {
       this.lancer = false;
-    }
+    },
+    start() {
+
+      if(this.pseudo != '')
+        this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie } });
+    },
   },
 
   mounted() {
-
-
-    if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
-      this.$store.commit('setPartie', false);
-
+    
     window.axios.get('series').then((response) => {
       this.series = response.data;
       this.serie = this.series[0]['id'];
@@ -75,3 +76,10 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+
+.ville{
+  margin-top: 10px;
+}
+</style>
