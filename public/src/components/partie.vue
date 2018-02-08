@@ -160,7 +160,9 @@ export default {
     },
 
     suivant() {
-      window.bus.$emit('removeMarker');
+      this.map.removeLayer(this.marker);
+      if(this.markerResult !== '')
+        this.map.removeLayer(this.markerResult);
       this.newscore = 0;
       if(this.nombre+1 > this.liste['image'].length-1)
       {
@@ -284,12 +286,6 @@ export default {
         imageNombre = this.nombre+1;
 
       this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
-    });
-
-    //Appelé pour supprimer les markers de la map
-    window.bus.$on('removeMarker',() => {
-      this.map.removeLayer(this.marker);
-      this.map.removeLayer(this.markerResult);
     });
   
     //Appelé pour ajouter le marker qui montre le bon emplacement de la photo
