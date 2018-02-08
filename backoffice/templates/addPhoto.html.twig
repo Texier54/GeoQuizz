@@ -46,6 +46,10 @@
                   <input type="text" class="form-control" id="latitude" value="" name="latitude" required>
                   <small id="help" class="form-text text-muted">Drag it to the exact position of the photo.</small>
               </div>
+
+                <input type="hidden" name="{{ nameKey }}" value="{{ name }}">
+                <input type="hidden" name="{{ valueKey }}" value="{{ value }}">
+
               <input type="submit" class="btn btn-primary"/>
           </form>
         </div>

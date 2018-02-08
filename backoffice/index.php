@@ -36,6 +36,9 @@ $container['csrf'] = function ($c) {
 $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
+$container['csrf'] = function ($c) {
+    return new \Slim\Csrf\Guard;
+};
 /************************************
         Routes
 *************************************/
@@ -77,11 +80,20 @@ $app->get('/addPhoto/{id}', function ($request, $response, $args) {
 
     $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
 
+    $nameKey = $this->csrf->getTokenNameKey();
+    $valueKey = $this->csrf->getTokenValueKey();
+    $name = $request->getAttribute($nameKey);
+    $value = $request->getAttribute($valueKey);
+
     return $this->view->render($response, 'addPhoto.html.twig', [
         'data' => $arr,
-        'session' => isset($_SESSION['pseudo'])
+        'session' => isset($_SESSION['pseudo']),
+        'nameKey' => $nameKey,
+        'valueKey' => $valueKey,
+        'name' => $name,
+        'value' => $value,
     ]);
-})->setName('addPhoto');
+})->setName('addPhoto')->add($container->get('csrf'));
 
 $app->get('/addSerie', function ($request, $response, $args) {
 
@@ -89,10 +101,19 @@ $app->get('/addSerie', function ($request, $response, $args) {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
 
+    $nameKey = $this->csrf->getTokenNameKey();
+    $valueKey = $this->csrf->getTokenValueKey();
+    $name = $request->getAttribute($nameKey);
+    $value = $request->getAttribute($valueKey);
+
     return $this->view->render($response, 'addSerie.html.twig', [
-        'session' => isset($_SESSION['pseudo'])
+        'session' => isset($_SESSION['pseudo']),
+        'nameKey' => $nameKey,
+        'valueKey' => $valueKey,
+        'name' => $name,
+        'value' => $value,
     ]);
-})->setName('addSerie');
+})->setName('addSerie')->add($container->get('csrf'));
 
 /*     Validator     */
 $validateAddSerie = [
@@ -145,7 +166,7 @@ $app->post('/addSerie', function ($request, $response, $args) {
     {
         return $this->view->render($response, 'addSerie.html.twig', []);
     }
-})->add(new Validation($validateAddSerie));
+})->add(new Validation($validateAddSerie))->add($container->get('csrf'));
 
 $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
 
@@ -216,19 +237,41 @@ $app->post('/addPhoto/{id}', function ($request, $response, $args) {
     {
         return $response->withRedirect($this->router->pathFor('addPhoto', ['id' => $args['id']]));
     }
-})->add(new Validation($validateAddPhoto));
+})->add(new Validation($validateAddPhoto))->add($container->get('csrf'));
 
 $app->get('/connexion', function ($request, $response, $args) {
     if(isset($_SESSION['pseudo']))
         return $response->withRedirect($this->router->pathFor('home'), 301);
-    return $this->view->render($response, 'connexion.html.twig', []);
-})->setName('connexion');
+    
+    $nameKey = $this->csrf->getTokenNameKey();
+    $valueKey = $this->csrf->getTokenValueKey();
+    $name = $request->getAttribute($nameKey);
+    $value = $request->getAttribute($valueKey);
+
+    return $this->view->render($response, 'connexion.html.twig', [
+        'nameKey' => $nameKey,
+        'valueKey' => $valueKey,
+        'name' => $name,
+        'value' => $value
+    ]);
+})->setName('connexion')->add($container->get('csrf'));
 
 $app->get('/register', function ($request, $response, $args) {
     if(isset($_SESSION['pseudo']))
         return $response->withRedirect($this->router->pathFor('home'), 301);
-    return $this->view->render($response, 'register.html.twig', []);
-})->setName('register');
+
+    $nameKey = $this->csrf->getTokenNameKey();
+    $valueKey = $this->csrf->getTokenValueKey();
+    $name = $request->getAttribute($nameKey);
+    $value = $request->getAttribute($valueKey);
+
+    return $this->view->render($response, 'register.html.twig', [
+        'nameKey' => $nameKey,
+        'valueKey' => $valueKey,
+        'name' => $name,
+        'value' => $value
+    ]);
+})->setName('register')->add($container->get('csrf'));
 
 $app->get('/deconnexion', function ($request, $response, $args) {
     unset ($_SESSION['pseudo']);
@@ -278,7 +321,7 @@ $app->post('/connexion', function ($request, $response, $args) {
     {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
-})->add(new Validation($validateConnexion));
+})->add(new Validation($validateConnexion))->add($container->get('csrf'));
 
 /*     Validator     */
 $validateRegister = [
@@ -337,7 +380,7 @@ $app->post('/register', function ($request, $response, $args) {
     {
         return $this->view->render($response, 'register.html.twig', []);
     }
-})->add(new Validation($validateRegister));
+})->add(new Validation($validateRegister))->add($container->get('csrf'));
 
 // Run app
 $app->run();
