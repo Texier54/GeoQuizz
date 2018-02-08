@@ -74,7 +74,7 @@
 		public function getTabScore($req, $resp, $args) {
 
 			$tabScore = new partie();
-			$tabScore = $tabScore->select("nb_photos", "status", "score", "joueur", "id_serie")
+			$tabScore = $tabScore->select("nb_photos", "status", "score", "joueur", "id_serie", "difficulte", "created_at")
 								->take(10)
 								->where("status", "=", 2)
 								->orderBy("score", "DESC")

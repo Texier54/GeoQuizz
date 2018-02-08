@@ -3,17 +3,23 @@
       <div class="columns is-multiline end">
 
         <!-- DATA -->
-        <div class="column is-one-quarter is-size-5 is-capitalized has-text-centered data">
+        <div class="column is-size-5 is-capitalized has-text-centered data">
           {{ tableau.joueur }}
         </div>
-        <div class="column is-one-quarter is-size-5 is-uppercase has-text-centered data">
+        <div class="column is-size-5 is-uppercase has-text-centered data">
           {{ serie.ville }}
         </div>
-        <div class="column is-one-quarter is-size-5 has-text-centered data">
+        <div class="column is-size-5 has-text-centered data">
           {{ tableau.score }}
         </div>
-        <div class="column is-one-quarter is-size-5 has-text-centered data">
+        <div class="column is-size-5 has-text-centered data">
           {{ tableau.nb_photos }}
+        </div>
+        <div class="column is-size-5 has-text-centered data">
+          {{ tableau.difficulte }}
+        </div>
+        <div class="column is-size-5 has-text-centered data">
+         {{ tableau.date }}
         </div>
         <!-- FIN DATA -->
       </div>
