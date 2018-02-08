@@ -57,15 +57,66 @@ export default {
       partie: '',
       pseudo: '',
       difficulte: 0,
+      map: '',
+      temp: '',
     }
   },
 
   methods : {
 
+
+    /********************************
+    *         Functions             *
+    ********************************/
+
+    deg2rad(x){
+      return Math.PI*x/180;
+    },
+
+
+    precisionRound(number, precision) {
+      var factor = Math.pow(10, precision);
+      return Math.round(number * factor) / factor;
+    },
+
+
+    get_distance_m($lat1, $lng1, $lat2, $lng2) {
+      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
+      var $rlo1 = this.deg2rad($lng1);    // CONVERSION
+      var $rla1 = this.deg2rad($lat1);
+      var $rlo2 = this.deg2rad($lng2);
+      var $rla2 = this.deg2rad($lat2);
+      var $dlo = ($rlo2 - $rlo1) / 2;
+      var $dla = ($rla2 - $rla1) / 2;
+      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
+    ));
+      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
+      return ($earth_radius * $d);
+    },
+
+
     valider() {
       this.btn_val = false;
       this.btn_suiv = true;
-      window.bus.$emit('addMarkerResult');
+
+      let greenIcon = new L.Icon({
+        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+        iconSize: [25, 41],
+        iconAnchor: [12, 41],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+      });
+
+      if(this.val<= this.liste['serie']['distance']*this.difficulte)
+      {
+        this.map.removeLayer(this.marker);
+        this.marker = L.marker([this.temp.lat, this.temp.lng], {icon: greenIcon}).addTo(this.map);
+      }
+      else
+        this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(this.map);
+
+
 
       let addscore = 0;
       let bonus = 1;
@@ -142,119 +193,82 @@ export default {
         this.btn_suiv = false;
       }
 
-    }
-  },
+    },
 
-  mounted() {
+    createMap() {
 
-    var map = '';
-
-    if(this.$store.state.partie !== false && typeof this.$route.params.pseudo === 'undefined')
-    {
-
-      this.liste = this.$store.state.partie;
-      this.ville = this.liste['serie']['ville'];
-      this.nombre = this.liste['imageNombre'];
-      this.img = this.liste['image'][this.nombre]['url'];
       this.token = this.liste['token'];
-      this.difficulte = this.liste['difficulte'];
-      this.progress = Math.round(this.liste['progress']);
-      this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
-      this.score = this.liste['score'];
       this.pseudo = this.liste['pseudo'];
-      let lat = this.liste['serie']['latitude'];
-      let lng = this.liste['serie']['longitude'];
-      let zoom = this.liste['serie']['zoom'];
+      this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
 
-      map = L.map('map', {
-      center: [lat, lng],
-      zoom: zoom,
+      this.map = L.map('map', {
+      center: [this.liste['serie']['latitude'], this.liste['serie']['longitude']],
+      zoom: this.liste['serie']['zoom'],
       });
 
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
           minZoom: 1,
           maxZoom: 16
-      }).addTo(map);
+      }).addTo(this.map);
 
-      map.on('click', function(ev) {
-        temp = ev.latlng;
-        window.bus.$emit('updateCoord');
+      this.map.on('click', (ev) => {
+        this.temp = ev.latlng;
+        if(this.btn_suiv == false)
+        {
+          if(this.marker != '')
+            this.map.removeLayer(this.marker);
+
+          this.val = this.precisionRound(this.get_distance_m(this.temp.lat, this.temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
+          this.btn_val = true;
+          this.marker = L.marker([this.temp.lat, this.temp.lng]).addTo(this.map);
+        }
       });
 
-      this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+      this.intervalProgress = setInterval(() => { window.bus.$emit('updateProgress'); }, 1000);
 
+    }
+  },
+
+  mounted() {
+
+    if(this.$store.state.partie !== false && typeof this.$route.params.pseudo === 'undefined')
+    {
+      this.liste = this.$store.state.partie;
+      this.nombre = this.liste['imageNombre'];
+      this.score = this.liste['score'];
+      this.progress = Math.round(this.liste['progress']);
+      this.img = this.liste['image'][this.nombre]['url'];
+      this.difficulte = this.liste['difficulte'];
+      this.createMap();
     }
     else
     {
-    
       window.axios.post('partie',{
 
         serie_id : this.$route.params.serie,
         pseudo : this.$route.params.pseudo,
-        difficulte: this.$route.params.difficulte
+        difficulte: this.$route.params.difficulte,
+        nb_photos: this.$route.params.nb_photos
 
       }).then((response) => {
 
         this.liste = response.data;
-        this.ville = this.liste['serie']['ville'];
-        this.img = this.liste['image'][0]['url'];
-        this.token = this.liste['token'];
         this.difficulte = this.$route.params.difficulte;
         this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
-        this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
-        console.log(this.tempsMax);
-        this.pseudo = this.$route.params.pseudo;
-        let lat = this.liste['serie']['latitude'];
-        let lng = this.liste['serie']['longitude'];
-        let zoom = this.liste['serie']['zoom'];
-
-        map = L.map('map', {
-        center: [lat, lng],
-        zoom: zoom,
-        });
-
-        L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-            minZoom: 1,
-            maxZoom: 16
-        }).addTo(map);
-
-        map.on('click', (ev) => {
-          console.log(this.liste);
-          temp = ev.latlng;
-          window.bus.$emit('updateCoord');
-        });
-
-        this.intervalProgress = setInterval(() => { window.bus.$emit('updateProgress'); }, 1000);
+        this.img = this.liste['image'][0]['url'];
+        this.createMap();
 
       }).catch((error) => {
 
         console.log(error);
 
       });
-
     }
-
-    let temp;
 
     /********************************
     *            Emits              *
     ********************************/
-
-    //Appelé lors du click sur la map
-    window.bus.$on('updateCoord',() => {
-
-      if(this.btn_suiv == false)
-      {
-        if(this.marker != '')
-          map.removeLayer(this.marker);
-
-        this.val = precisionRound(get_distance_m(temp.lat, temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
-        this.btn_val = true;
-        this.marker = L.marker([temp.lat, temp.lng]).addTo(map);
-      }
-    });
 
     //Appelé à chaque secondes du timer (intervalProgress)
     window.bus.$on('updateProgress',() => {
@@ -274,29 +288,14 @@ export default {
 
     //Appelé pour supprimer les markers de la map
     window.bus.$on('removeMarker',() => {
-      map.removeLayer(this.marker);
-      map.removeLayer(this.markerResult);
+      this.map.removeLayer(this.marker);
+      this.map.removeLayer(this.markerResult);
     });
   
     //Appelé pour ajouter le marker qui montre le bon emplacement de la photo
     window.bus.$on('addMarkerResult',() => {
 
-      let greenIcon = new L.Icon({
-        iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-      });
 
-      if(this.val<= this.liste['serie']['distance']*this.difficulte)
-      {
-        map.removeLayer(this.marker);
-        this.marker = L.marker([temp.lat, temp.lng], {icon: greenIcon}).addTo(map);
-      }
-      else
-        this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(map);
     });
 
     //Appelé pour supprimer la partie et quitter
@@ -332,33 +331,6 @@ export default {
 
     });
 
-
-    /********************************
-    *         Functions             *
-    ********************************/
-
-    function deg2rad(x){
-      return Math.PI*x/180;
-    }
-
-    function get_distance_m($lat1, $lng1, $lat2, $lng2) {
-      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-      var $rlo1 = deg2rad($lng1);    // CONVERSION
-      var $rla1 = deg2rad($lat1);
-      var $rlo2 = deg2rad($lng2);
-      var $rla2 = deg2rad($lat2);
-      var $dlo = ($rlo2 - $rlo1) / 2;
-      var $dla = ($rla2 - $rla1) / 2;
-      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
-    ));
-      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
-      return ($earth_radius * $d);
-    }
-
-    function precisionRound(number, precision) {
-      var factor = Math.pow(10, precision);
-      return Math.round(number * factor) / factor;
-    }
   }
 }
 </script>

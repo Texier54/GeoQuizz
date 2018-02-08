@@ -8,7 +8,7 @@
         </header>
 
         <section class="modal-card-body">
-          <label class="label" id="pseudo">Pseudo</label>
+          <label class="label" for="pseudo">Pseudo</label>
           <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
           <label class="label ville" for="ville">Ville :</label>
           <div class="select">
@@ -17,12 +17,12 @@
             </select>
           </div>
           <label class="label" for="difficulte">Difficulté :</label>
+
           <choix-difficulte></choix-difficulte>
-          <div class="select">
-            <select id="ville">
-              <choix-nombre v-for="serie in series" :serie="serie"></choix-nombre>
-            </select>
-          </div>
+
+          <label class="label" for="nombre">Nombre d'images 5-20 :</label>
+          <input class="input" id="nombre" type="number" v-model="nombre">
+
         </section>
 
         <footer class="modal-card-foot">
@@ -38,12 +38,11 @@
 
 import choixSerie from './choix-serie.vue'
 import choixDifficulte from './choix-difficulte.vue'
-import choixNombre from './choix-nombre.vue'
 
 export default {
   props : ['lancer'],
   name: 'startgame',
-  components: {choixSerie, choixDifficulte, choixNombre},
+  components: {choixSerie, choixDifficulte},
 
   data () {
     return {
@@ -61,8 +60,8 @@ export default {
     },
     start() {
 
-      if(this.pseudo != '')
-        this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie, difficulte : this.difficulte } });
+      if(this.pseudo != '' && this.nombre >= 5 && this.nombre <= 20)
+        this.$router.push({ name: 'partie', params : { pseudo : this.pseudo, serie : this.serie, difficulte : this.difficulte, nb_photos : this.nombre } });
     },
   },
 
@@ -75,11 +74,6 @@ export default {
     window.bus.$on('choixDifficulte',(nb) => {
       this.difficulte = nb;
     });
-
-    window.bus.$on('choixImage',(nb) => {
-      this.nombre = nb;
-    });
-
 
     if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
       this.$store.commit('setPartie', false);

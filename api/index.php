@@ -72,6 +72,8 @@ $app->post('/partie[/]', function (Request $req, Response $resp, $args) {
 $validatorsUpdatePartie = [
     'score' => v::intVal(),
     'etat' => v::notEmpty(),
+    'nb_photos' => v::notEmpty(),
+    'serie_id' => v::notEmpty(),
 ];
 
 $app->put('/partie/{token}', function (Request $req, Response $resp, $args) {

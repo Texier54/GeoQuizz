@@ -1,9 +1,18 @@
 icone Suspendre partie*
 design 60s*
 tableau score (vérifier etat partie)*
-difficulté
-date partie
+difficulté*
+date partie*
 
-supprimer photo avec serie
-check console (backoffice js)
-changer home accueil (backoffice)
+supprimer photo avec serie*
+check console (backoffice js)*
+changer home accueil (backoffice)*
+
+
+
+
+
+readme (trello)
+api doc
+commentaire backoffice
+grille dans popup

@@ -113,7 +113,7 @@
 				$partie->status = 1;
 				$partie->score = 0;
 				$partie->difficulte = $parsedBody['difficulte'];
-				$partie->nb_photos = 10;
+				$partie->nb_photos = $parsedBody['nb_photos'];
 				$partie->id_serie = $parsedBody['serie_id'];
 
 				$photo = new photo();
