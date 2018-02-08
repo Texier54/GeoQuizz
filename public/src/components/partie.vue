@@ -12,12 +12,12 @@
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-">{{ ville }}</p>
           </div>
-          <button class="btn button is-success" v-show="btn_val" @click="valider">VALIDER</button>
-          <button class="btn button is-info" v-show="btn_suiv" @click="suivant">SUIVANT</button>
+          <button class="btn button is-success" v-show="btn_val" @click="valider"><i class="marker fas fa-check-circle"></i>VALIDER</button>
+          <button class="btn button is-info" v-show="btn_suiv" @click="suivant"><i class="marker fas fa-angle-double-right"></i>SUIVANT</button>
           <div class="points is-size-4 has-text-weight-semibold">
             <p class="score">Score : {{ score }}  ( +{{ newscore }} ! )</p>
           </div>
-          {{ progress }}s
+          <p class="is-size-4 has-text-weight-semibold"><i class="marker fas fa-hourglass-half"></i>{{ progress }}s</p>
           <progress class="progress is-success" :value="progress" :max="tempsMax">{{ progress }}</progress>
         </div>
       </div>
@@ -408,6 +408,8 @@ body {
   margin-bottom: 32px;
 }
 
-
+.marker{
+  margin-right: 10px;
+}
 
 </style>

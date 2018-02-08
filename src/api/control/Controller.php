@@ -71,6 +71,25 @@
 
 		}
 
+		public function getTabScore($req, $resp, $args) {
+
+			$tabScore = new partie();
+			$tabScore = $tabScore->select("nb_photos", "status", "score", "joueur", "id_serie")
+								->take(10)
+								->where("status", "=", 2)
+								->orderBy("score", "DESC")
+								->get();
+
+			$resp= $resp->withHeader( 'Content-type', "application/json;charset=utf-8");
+
+			$resp= $resp->withStatus(201);
+
+			$tab = $tabScore;
+
+			$resp->getBody()->write(json_encode($tab));
+			return $resp;		
+
+		}
 
 		public function createPartie($req, $resp, $args) {
 

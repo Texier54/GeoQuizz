@@ -12,8 +12,8 @@
     </div>
 
     <div class="navbar-menu" id="navMenu">
-    <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5">Susprendre partie</button>
-      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5">Quitter la partie</button>
+    <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5"><i class="marker fas fa-pause-circle "></i>Susprendre partie</button>
+      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5"><i class="marker fas fa-sign-out-alt "></i>Quitter la partie</button>
     </div>
 
   </nav>
@@ -101,6 +101,7 @@ export default {
 }
 
 .marker{
+  margin-top: 5px;
   margin-right: 10px;
 }
 

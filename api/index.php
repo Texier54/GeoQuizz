@@ -55,12 +55,17 @@ $validatorsCreatePartie = [
     'pseudo' => v::notEmpty(),
 ];
 
+$app->get('/partie[/]', function (Request $req, Response $resp, $args) {
+    $c = new geoquizz\api\control\Controller($this);
+    return $c->getTabScore($req, $resp, $args);
+    }
+);
 
 $app->post('/partie[/]', function (Request $req, Response $resp, $args) {
     $c = new geoquizz\api\control\Controller($this);
     return $c->createPartie($req, $resp, $args);
     }
-)->add(new Validation( $validatorsCreatePartie));
+);
 
 
 /* Validator */

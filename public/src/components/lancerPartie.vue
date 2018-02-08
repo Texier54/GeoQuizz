@@ -27,8 +27,34 @@
 
       </nav>
 
-      <!--<tableauScore></tableauScore>-->
+      <div class="border">
+        <div class="is-size-2 has-text-centered is-capitalized has-text-weight-bold">
+          <p>Tableau des scores</p>
+        </div>
+        <div class="is-size-6 has-text-centered has-text-weight-semibold">
+          <p>(Classé du meilleur score au moins bon)</p>
+        </div>
+      </div>
 
+
+      <div class="columns is-multiline">
+        <!-- TITRE DES COLONNES -->
+        <div class="column is-one-quarter is-size-4 has-text-centered has-text-weight-semibold titre first">
+          Pseudo
+        </div>
+        <div class="column is-one-quarter is-size-4 has-text-centered has-text-weight-semibold titre">
+          Série
+        </div>
+        <div class="column is-one-quarter is-size-4 has-text-centered has-text-weight-semibold titre">
+          Score
+        </div>
+        <div class="column is-one-quarter is-size-4 has-text-centered has-text-weight-semibold titre last">
+          Nombre de photo
+        </div>
+      </div>
+      <div class="end"></div>
+      <tabScore v-for="tableau in tableaux" :tableau="tableau"></tabScore>
+    
     </section>
 
     <startgame :lancer="lancer"></startgame>
@@ -41,14 +67,16 @@
 
 import NavBar from './navBar.vue'
 import startgame from './startgame.vue'
+import tabScore from './tableauScore.vue'
 
 export default {
   name: 'lancerPartie',
-  components: {NavBar, startgame},
+  components: {NavBar, startgame, tabScore},
   
   data () {
     return {
       lancer: false,
+      tableaux: []
     }
   },
   methods : {
@@ -57,6 +85,17 @@ export default {
     },
   },
   mounted() {
+
+    if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
+      this.$store.commit('setPartie', false);
+
+    window.axios.get('partie',{
+    }).then((response) => {
+      this.tableaux = response.data;
+    }).catch((error) => {
+      console.log(error);
+    });
+
 
   }
 }
@@ -101,5 +140,13 @@ export default {
 
 .marker{
   margin-right: 10px;
+}
+
+.border{
+  border-top: 3px solid #363636;
+}
+
+.end{
+  border-bottom: 1px solid black;
 }
 </style>
