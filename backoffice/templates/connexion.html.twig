@@ -15,28 +15,32 @@
     <div class="container">
 
       <div class="row">
-        <header class="jumbotron my-4 col-md-12">
-            <h1 class="display-3">Signin</h1>
-            <a href="{{ path_for('register') }}"><button type="button" class="btn btn-success">Nouvelle utilisateur?</button></a>
-        </header>
-        <form class="form-signin col-md-6" action="" method="POST">
-            <h2 class="form-signin-heading">Welcome back</h2> <hr>
+        <div class="col-md-12">
+            <header class="jumbotron my-4">
+                <h1 class="display-3">Signin</h1>
+                <a href="{{ path_for('register') }}"><button type="button" class="btn btn-success">Nouvelle utilisateur?</button></a>
+            </header>
+        </div>
+        <div class="offset-md-3 col-md-6">
+            <form class="form-signin" action="" method="POST">
+                <h2 class="form-signin-heading">Bienvenue!</h2> <hr>
 
-            <div class="form-group">
-                <label for="pseudo">Pseudo</label>
-                <input name="pseudo" type="text" id="pseudo" class="form-control" required autofocus>
-            </div>
+                <div class="form-group">
+                    <label for="pseudo">Pseudo</label>
+                    <input name="pseudo" type="text" id="pseudo" class="form-control" required autofocus>
+                </div>
 
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input name="password" type="password" id="password" class="form-control" required>
-            </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input name="password" type="password" id="password" class="form-control" required>
+                </div>
 
-            <input type="hidden" name="{{ nameKey }}" value="{{ name }}">
-            <input type="hidden" name="{{ valueKey }}" value="{{ value }}">
+                <input type="hidden" name="{{ nameKey }}" value="{{ name }}">
+                <input type="hidden" name="{{ valueKey }}" value="{{ value }}">
 
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
-        </form>
+                <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            </form>
+        </div>
       </div>
 
     </div>
