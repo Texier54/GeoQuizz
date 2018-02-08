@@ -75,25 +75,39 @@ export default {
 
 
     precisionRound(number, precision) {
-      var factor = Math.pow(10, precision);
+      let factor = Math.pow(10, precision);
       return Math.round(number * factor) / factor;
     },
 
 
     get_distance_m($lat1, $lng1, $lat2, $lng2) {
-      var $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-      var $rlo1 = this.deg2rad($lng1);    // CONVERSION
-      var $rla1 = this.deg2rad($lat1);
-      var $rlo2 = this.deg2rad($lng2);
-      var $rla2 = this.deg2rad($lat2);
-      var $dlo = ($rlo2 - $rlo1) / 2;
-      var $dla = ($rla2 - $rla1) / 2;
-      var $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
+      let $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
+      let $rlo1 = this.deg2rad($lng1);    // CONVERSION
+      let $rla1 = this.deg2rad($lat1);
+      let $rlo2 = this.deg2rad($lng2);
+      let $rla2 = this.deg2rad($lat2);
+      let $dlo = ($rlo2 - $rlo1) / 2;
+      let $dla = ($rla2 - $rla1) / 2;
+      let $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
     ));
-      var  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
+      let  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
       return ($earth_radius * $d);
     },
 
+    updateProgress() {
+      this.progress = this.progress-1;
+      console.log(this.progress);
+      if(this.progress <= 0)
+      {
+        clearInterval(this.intervalProgress);
+        this.btn_suiv = true;
+      }
+      let imageNombre = this.nombre;
+      if(this.btn_suiv == true)
+        imageNombre = this.nombre+1;
+
+      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
+    },
 
     valider() {
       this.btn_val = false;
@@ -115,8 +129,6 @@ export default {
       }
       else
         this.markerResult = L.marker([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']], {icon: greenIcon}).addTo(this.map);
-
-
 
       let addscore = 0;
       let bonus = 1;
@@ -174,22 +186,16 @@ export default {
         this.btn_suiv = false;
 
         window.axios.put('partie/'+this.token,{
-
           score : this.score,
           etat: 2
-
-        }).then((response) => {
-
         }).catch((error) => {
-
           console.log(error);
-
         });
       }
       else
       {
         this.progress = this.liste['serie']['temps'];
-        this.intervalProgress = setInterval(function(){ window.bus.$emit('updateProgress'); }, 1000);
+        this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
         this.nombre = this.nombre+1;
         this.img = this.liste['image'][this.nombre]['url'];
         this.btn_suiv = false;
@@ -227,13 +233,19 @@ export default {
         }
       });
 
-      this.intervalProgress = setInterval(() => { window.bus.$emit('updateProgress'); }, 1000);
+      this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
 
     }
   },
 
   mounted() {
 
+
+    /********************************
+    *       Lancement partie        *
+    ********************************/
+
+    //Verifie si une partie est save
     if(this.$store.state.partie !== false && typeof this.$route.params.pseudo === 'undefined')
     {
       this.liste = this.$store.state.partie;
@@ -272,36 +284,12 @@ export default {
     *            Emits              *
     ********************************/
 
-    //Appelé à chaque secondes du timer (intervalProgress)
-    window.bus.$on('updateProgress',() => {
-      this.progress = this.progress-1;
-      console.log(this.progress);
-      if(this.progress <= 0)
-      {
-        clearInterval(this.intervalProgress);
-        this.btn_suiv = true;
-      }
-      let imageNombre = this.nombre;
-      if(this.btn_suiv == true)
-        imageNombre = this.nombre+1;
-
-      this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
-    });
-  
-    //Appelé pour ajouter le marker qui montre le bon emplacement de la photo
-    window.bus.$on('addMarkerResult',() => {
-
-
-    });
-
     //Appelé pour supprimer la partie et quitter
     window.bus.$on('quitterPartie',() => {
 
       window.axios.put('partie/'+this.token,{
-
         score : 1,
         etat: 3
-
       }).then((response) => {
 
         clearInterval(this.intervalProgress);
@@ -309,9 +297,7 @@ export default {
         this.$router.push({ path: 'lancerPartie'});
 
       }).catch((error) => {
-
         console.log(error);
-
       });
     });
 

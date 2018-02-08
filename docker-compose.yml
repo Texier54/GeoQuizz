@@ -17,6 +17,11 @@ networks:
     driver: bridge
 
 services:
+
+#############################
+#       Api du projet       #
+#############################
+
   api.public:
     image: canals/php
     container_name: api.geoquizz.local

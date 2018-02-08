@@ -9,10 +9,7 @@ check console (backoffice js)*
 changer home accueil (backoffice)*
 
 
-
-
-
-readme (trello)
+readme (trello)*
 api doc
 commentaire backoffice
 grille dans popup
