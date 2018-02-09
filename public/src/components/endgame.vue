@@ -12,8 +12,8 @@
           Votre score : {{ partie.score }}
         </section>
         <footer class="modal-card-foot">
-          <router-link class="button is-success" :to="{ name:'lancerPartie' }">Oui</router-link>
-          <button class="button is-danger" @click="noSave">Non</button>
+          <button class="button is-success" @click="Save">Oui</button>
+          <router-link class="button is-danger" :to="{ name:'lancerPartie' }">Non</router-link>     
         </footer>
       </div>
     </div>
@@ -30,11 +30,11 @@ export default {
     }
   },
   methods : {
-    noSave() {
+    Save() {
       window.axios.put('partie/'+this.partie.token,{
 
         score : this.partie.score,
-        etat: 4
+        etat: 2
 
       }).then((response) => {
         this.$router.push({ path: 'lancerPartie'});

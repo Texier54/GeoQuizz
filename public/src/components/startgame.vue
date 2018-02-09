@@ -1,5 +1,5 @@
 <template>
-    <div class="modal" v-bind:class="{ 'is-active': lancer }">
+    <div class="modal is-active">
       <div class="modal-background" @click="fermer"></div>
       <div class="modal-card">
         <header class="modal-card-head">
@@ -13,7 +13,7 @@
             <div class="column">
               <label class="label options" for="ville">Ville :</label>
               <div class="select">
-                <select id="ville">
+                <select class="is-capitalized" id="ville">
                   <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
                 </select>
               </div>
@@ -56,7 +56,7 @@ export default {
 
   methods : {
     fermer() {
-      this.lancer = false;
+      window.bus.$emit('fermerStartGame');
     },
     start() {
       if(this.pseudo != '' && this.nombre >= 5 && this.nombre <= 20)
@@ -80,7 +80,7 @@ export default {
     if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
       this.$store.commit('setPartie', false);
 
-    //Recois le choix de la serie
+    //Recois le choix de la difficulte
     window.axios.get('series').then((response) => {
       this.series = response.data;
       this.serie = this.series[0]['id'];
