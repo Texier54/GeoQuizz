@@ -11,7 +11,7 @@
           <input v-model="pseudo" type="text" class="input" id="pseudo" name="pseudo" placeholder="Pseudo" required>
           <div class="columns">
             <div class="column">
-              <label class="label options" for="ville">Ville :</label>
+              <label class="label options" for="ville">Serie :</label>
               <div class="select">
                 <select class="is-capitalized" id="ville">
                   <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
