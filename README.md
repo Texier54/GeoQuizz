@@ -32,7 +32,7 @@ Importation de la BDD /sql/geoquizz.sql
 ```
 
 ```
-Remplissage de la BDD /sql/data_phpmyadmin.sql ou /sql/data_adminer.sql
+Remplissage de la BDD /sql/geoquizz_data.sql
 ```
 
 ```
