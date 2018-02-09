@@ -21,11 +21,13 @@ Ces instructions vous permettront d'obtenir une copie du projet opérationnel su
 
 ```
 * Clone le depot git — git clone https://github.com/Texier54/GeoQuizz
-* Configuration du fichier de la BDD ./src/conf/geoquizz.db.conf.ini
 * Modifier le ficher /etc/hosts an y ajoutant : 127.0.0.1 api.geoquizz.local backoffice.local
-* Faire un : docker-compose up --no-start
+* Faire un : docker-compose up
 * Suivi d'un : docker-compose start
-* Importation de la BDD /sql/geoquizz.sql
+* Récuperation des informations de connexion à la BDD ./src/conf/geoquizz.db.conf.ini
+* Accéder à la BDD a l'addresse :
+ * localhost:8090
+* Importation des tables de la BDD /sql/geoquizz.sql
 * Remplissage de la BDD /sql/geoquizz_data.sql
 * Dans ./src composer install
 * Dans ./public npm install
@@ -35,7 +37,9 @@ Ces instructions vous permettront d'obtenir une copie du projet opérationnel su
 
 * Pour acceder au jeu il faudra aller au lien **localhost:XXXX**, dependant de ce que votre npm run dev vous dis, normalement c'est le port **8080**
 
-* La BDD Adminer se trouve à l'addresse **api.geoquizz.local:8090**
+* Utilisateur de test
+  * Pseudo : Jeandudu
+  * Mot de passe : jd54
 
 ## Fait avec
 
