@@ -8,72 +8,57 @@ Trello : https://trello.com/b/uOqYzi1V/geoquizz
 
 Ces instructions vous permettront d'obtenir une copie du projet opérationnel sur votre machine locale à des fins de développement et de test. Voir déploiement pour les notes sur la façon de déployer le projet sur un système actif.
 
-**Api du projet :** api.geoquizz.local:10080
-
-**Player du projet :** http://localhost:8080
-
-**Backeng de gestion :** backoffice.local:10081
-
-
 ### Prérequis
-
-Nécéssite Composer
+```
+* Web server avec un URL rewriting
+* PHP 7.0+
+* Composer installer globallement
+* Docker installer
+* NodeJS/npm installer
+```
 
 ### Installation
 
-Récupération du projet
+```
+* Clone le depot git — git clone https://github.com/Texier54/GeoQuizz
+* Importation de la BDD /sql/geoquizz.sql
+* Remplissage de la BDD /sql/geoquizz_data.sql
+* Configuration du fichier de la BDD ./src/conf/geoquizz.db.conf.ini
+* Modifier le ficher /etc/hosts an y ajoutant : 127.0.0.1 api.geoquizz.local backoffice.local
+* Faire un : docker-compose up
+* Suivi d'un : docker-compose start
+* Dans ./src composer install
+* Dans ./public npm install
+* Dans ./public npm run dev
+```
+* Pour acceder au backoffice il faudra aller au lien : backoffice.local:10081
 
-```
-Clone le depot git — git clone https://github.com/Texier54/GeoQuizz
-```
+* Pour acceder au jeu il faudra aller au lien localhost:XXXX, dependant de ce que votre npm run dev vous dis, normalement c'est le port 8080
 
-```
-Importation de la BDD /sql/geoquizz.sql
-```
-
-```
-Remplissage de la BDD /sql/geoquizz_data.sql
-```
-
-```
-Configuration du fichier src/conf/geoquizz.db.conf.ini
-```
-
-```
-docker-compose up
-```
-
-```
-docker-compose start
-```
-
-```
-Dans /src composer install
-```
-
-```
-Dans /public npm install
-```
-
-```
-Dans /public npm run dev
-```
+* La BDD Adminer se trouve à l'addresse api.geoquizz.local:8090
 
 ## Fait avec
 
-* [Slim](https://www.slimframework.com/) - Framework PhP
-* [Eloquent](https://laravel.com/docs/5.0/eloquent) - ORM
-* [Twig](https://twig.symfony.com/) - Template engine for PHP
+### Backoffice :
+* [Slim PHP](https://www.slimframework.com/) framework
+* [Slim Twig](https://twig.symfony.com/) templating engine avec debug
+* [Eloquent ORM](https://laravel.com/docs/5.0/eloquent)
+* [Slim CSRF](https://github.com/slimphp/Slim-Csrf) avec twig
+* [Respect Validator](https://github.com/Respect/Validation) 
+* [Bootstrap CSS](https://github.com/twbs/bootstrap) framework 
+
+### Jeu :
+* [vuejs](https://github.com/vuejs) javascript framework
+  * [vue](https://github.com/vuejs/vue)
+  * [vue-router](https://github.com/vuejs/vue-router)
+  * [vuex](https://github.com/vuejs/vuex)
+* [Axios](https://github.com/axios/axios)
+* [Leaflet](https://github.com/Leaflet/Leaflet) javascript library 
+* [Bulma CSS](https://github.com/jgthms/bulma) framwork
 
 ## Autheurs
 
-* **Baptiste Texier** - *Lancement* - [Github](https://github.com/texier54)
-* **Islam Elshobokshy** - [Github](https://github.com/elshobokshy)
-* **Charles Montrouge** - [Github](https://github.com/Charles974)
-* **Jordan Sautron** - [Github](https://github.com/Voytsu)
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
-
-
+* [Baptiste Texier](https://github.com/texier54)
+* [Islam Elshobokshy](https://github.com/elshobokshy)
+* [Charles Montrouge](https://github.com/Charles974)
+* [Jordan Sautron](https://github.com/Voytsu)
