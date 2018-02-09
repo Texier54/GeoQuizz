@@ -13,7 +13,7 @@
             <div class="column">
               <label class="label options" for="ville">Ville :</label>
               <div class="select">
-                <select id="ville">
+                <select class="is-capitalized" id="ville">
                   <choix-serie v-for="serie in series" :serie="serie"></choix-serie>
                 </select>
               </div>

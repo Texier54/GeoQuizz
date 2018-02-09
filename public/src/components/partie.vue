@@ -10,7 +10,7 @@
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
           <div>
-            <p class="is-size-5 has-text-weight-semibold has-text-centered">{{ aide }}</p>
+            <p class="is-size-5 has-text-weight-semibold has-text-centered is-capitalized">{{ aide }}</p>
           </div>
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-uppercase">{{ ville }}</p>

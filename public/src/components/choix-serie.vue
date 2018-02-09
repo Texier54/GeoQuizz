@@ -1,5 +1,5 @@
 <template>
-  <option @click="choix">{{ serie.ville }}</option>
+  <option @click="choix"><p class="is-capitalized">{{ serie.ville }}</p></option>
 </template>
 
 <script>
