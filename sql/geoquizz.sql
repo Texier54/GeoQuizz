@@ -27,8 +27,8 @@ CREATE TABLE photo(
         nom         Varchar (50) ,
         description Varchar (255) ,
         url         Varchar (255) ,
-        longitude   Varchar (255) ,
-        latitude    Varchar (25) ,
+        latitude    Float (11) ,
+        longitude   Float (11) ,
         id_serie Int ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
@@ -41,11 +41,11 @@ CREATE TABLE photo(
 CREATE TABLE serie(
         id        int (11) Auto_increment  NOT NULL ,
         ville     Varchar (50) ,
-        latitude  Varchar (50) ,
-        longitude Varchar (50) ,
-        distance  Varchar (25) ,
-        temps  Varchar (25) ,
-        zoom      Varchar (25) ,
+        latitude    Float (11) ,
+        longitude   Float (11) ,
+        distance  int (11) ,
+        temps  int (11) ,
+        zoom      int (11) ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
@@ -58,10 +58,10 @@ CREATE TABLE partie(
         id        int (11) Auto_increment  NOT NULL ,
         token     Varchar (255) ,
         nb_photos Int ,
-        status    Varchar (25) ,
-        score     Varchar (25) ,
+        status    int (11) ,
+        score     int (11) ,
         joueur    Varchar (255) ,
-	difficulte FLoat (11) ,
+	difficulte Float (11) ,
   	created_at datetime DEFAULT NULL,
   	updated_at datetime DEFAULT NULL,
         id_serie Int ,
