@@ -19,3 +19,6 @@ readme (utilisateurs -no--start config.ini)
 maj ville select 
 maj nom image
 fix f5 modal startgame
+
+Jeandudu jd54
+MichhelEv me54
