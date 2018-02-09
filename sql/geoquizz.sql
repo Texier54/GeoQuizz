@@ -27,8 +27,8 @@ CREATE TABLE photo(
         nom         Varchar (50) ,
         description Varchar (255) ,
         url         Varchar (255) ,
-        longitude   Varchar (255) ,
-        latitude    Varchar (25) ,
+        latitude    Varchar (50) ,
+        longitude   Varchar (50) ,
         id_serie Int ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
@@ -41,11 +41,11 @@ CREATE TABLE photo(
 CREATE TABLE serie(
         id        int (11) Auto_increment  NOT NULL ,
         ville     Varchar (50) ,
-        latitude  Varchar (50) ,
-        longitude Varchar (50) ,
-        distance  Varchar (25) ,
-        temps  Varchar (25) ,
-        zoom      Varchar (25) ,
+        latitude    Varchar (50) ,
+        longitude   Varchar (50) ,
+        distance  int (11) ,
+        temps  int (11) ,
+        zoom      int (11) ,
         PRIMARY KEY (id )
 )ENGINE=InnoDB;
 
