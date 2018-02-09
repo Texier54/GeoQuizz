@@ -10,11 +10,15 @@ changer home accueil (backoffice)*
 
 
 readme (trello)*
-api doc
-commentaire backoffice
+api doc*
+commentaire backoffice*
 grille dans popup*
 style aide partie*
 
+readme (utilisateurs -no--start config.ini)
+maj ville select 
+maj nom image
+fix f5 modal startgame
 
 Jeandudu jd54
 MichhelEv me54
