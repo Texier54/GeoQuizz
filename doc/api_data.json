@@ -70,8 +70,22 @@
             "group": "Parameter",
             "type": "String",
             "optional": false,
-            "field": "pseudo",
+            "field": "joueur",
             "description": "<p>Pseudo du joueur</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "nb_photos",
+            "description": "<p>Le nombre de photos choisi : entre 2 et 20</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "String",
+            "optional": false,
+            "field": "difficulte",
+            "description": "<p>Choix de la difficulté : Normal, Medium, Hard</p>"
           }
         ]
       }
@@ -140,7 +154,7 @@
             "group": "Parameter",
             "type": "Number",
             "optional": false,
-            "field": "etat",
+            "field": "status",
             "description": "<p>L'état de la partie</p>"
           }
         ],
@@ -251,6 +265,13 @@
             "optional": false,
             "field": "latitude",
             "description": "<p>La latitude de la photo</p>"
+          },
+          {
+            "group": "Parameter",
+            "type": "Number",
+            "optional": false,
+            "field": "id_serie",
+            "description": "<p>Id de la série ou la photo est présente</p>"
           }
         ],
         "request parameter": [
@@ -321,7 +342,7 @@
       "examples": [
         {
           "title": "exemple de réponse en cas de succès",
-          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"object\",\n   \tphoto : {\n         \"id\"  : \"3\",\n         \"description\" : \"Place Charles III\",\n         \"url\" : \"4\",\n         \"longitude\" : \"48.16\"\n         \"latitude\" : \"-10.48\"\n         \"id_serie\" : \"1\"\n   \t}\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"object\",\n   \tphoto : {\n         \"id\"  : \"3\",\n         \"description\" : \"Place Charles III\",\n         \"url\" : \"http://image-photos.linternaute.com/image_photo/450/2976037860/571681.jpg\",\n         \"longitude\" : \"48.16\"\n         \"latitude\" : \"-10.48\"\n         \"id_serie\" : \"1\"\n   \t}\n}",
           "type": "json"
         }
       ]
@@ -378,7 +399,7 @@
       "examples": [
         {
           "title": "exemple de réponse en cas de succès",
-          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"object\",\n   \tphoto : {\n         \"id\"  : \"3\",\n         \"description\" : \"Place Stan\",\n         \"url\" : \"4\",\n         \"longitude\" : \"48.16\",\n         \"latitude\" : \"-10.48\",\n         \"id_serie\" : \"1\"\n   \t}\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"object\",\n   \tphoto : {\n         \"id\"  : \"3\",\n         \"nom\" : \"PlaceStan\",\n         \"description\" : \"Place Stan\",\n         \"url\" : \"http://image-photos.linternaute.com/image_photo/450/2976037860/571681.jpg\",\n         \"longitude\" : \"48.16\",\n         \"latitude\" : \"-10.48\",\n         \"id_serie\" : \"1\"\n   \t}\n}",
           "type": "json"
         }
       ]
@@ -427,7 +448,7 @@
       "examples": [
         {
           "title": "exemple de réponse en cas de succès",
-          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"collection\",\n     serie : {\n         \"id\"  : 1 ,\n         \"nom\" : \"serieNancy\",\n         \"description\" : \"Une série de photo concernant la ville de Nancy\"\n   }\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"collection\",\n     serie : {\n         \"id\"  : 1 ,\n         \"ville\" : \"nancy\",\n         \"latitude\" : \"48.6\",\n         \"longitude\" : \"2.41112\",\n         \"distance\" : \"20\",\n         \"temps\" : \"60\",\n         \"zoom\" : \"13\"\n     }\n}",
           "type": "json"
         }
       ]
@@ -489,7 +510,7 @@
       "examples": [
         {
           "title": "exemple de réponse en cas de succès",
-          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"object\",\n     série : {\n         \"id\"  : 1 ,\n         \"nom\" : \"série1\",\n         \"description\" : \"Série concernant la ville de Nancy\"\n     }\n}",
+          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"object\",\n     série : {\n         \"id\"  : 1 ,\n         \"ville\" : \"nancy\",\n         \"latitude\" : \"48.6\",\n         \"longitude\" : \"2.41112\",\n         \"distance\" : \"20\",\n         \"temps\" : \"60\",\n         \"zoom\" : \"13\"\n     }\n}",
           "type": "json"
         }
       ]
@@ -561,7 +582,7 @@
             "type": "String",
             "optional": false,
             "field": "password",
-            "description": "<p>Mot de passe du nouvel utilisateur</p>"
+            "description": "<p>Mot de passe du nouvel utilisateur (hashé)</p>"
           },
           {
             "group": "Parameter",
@@ -607,7 +628,7 @@
       "examples": [
         {
           "title": "exemple de réponse en cas d'erreur",
-          "content": "HTTP/1.1 400 Bad Request\n{\n  \"type\": \"error\",\n  \"error\" : 400,\n  \"message\" : \"donnée manquante (description)\"\n}",
+          "content": "HTTP/1.1 400 Bad Request\n{\n  \"type\": \"error\",\n  \"error\" : 400,\n  \"message\" : \"donnée manquante (pseudo)\"\n}",
           "type": "json"
         }
       ]
