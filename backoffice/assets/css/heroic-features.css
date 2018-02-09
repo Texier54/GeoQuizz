@@ -43,3 +43,8 @@ button {
 	margin-top: 15px;
 	margin-bottom: 15px;
 }
+
+.images {
+	text-align: center;
+	word-wrap: break-word;
+}
