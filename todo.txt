@@ -15,10 +15,10 @@ commentaire backoffice*
 grille dans popup*
 style aide partie*
 
-readme (utilisateurs -no--start config.ini)
-maj ville select 
-maj nom image
-fix f5 modal startgame
+readme (utilisateurs --no-start config.ini)*
+maj ville select*
+maj nom image*
+fix f5 modal startgame*
 
 Jeandudu jd54
 MichhelEv me54
