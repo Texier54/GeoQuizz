@@ -86,6 +86,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
+      //Save dans localStorage pour résoudre problème F5
       this.$store.commit('setPartie', {'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
     },
 
@@ -113,6 +114,7 @@ export default {
       let addscore = 0;
       let bonus = 1;
 
+      //Calcul bonus
       if(this.progress >= this.tempsMax-5)
         bonus = 4;
       else if(this.progress >= this.tempsMax-10)
@@ -120,22 +122,15 @@ export default {
       else if(this.progress <= 0)
         bonus = 0;
 
+      //Calcul points
       if(this.val<= this.liste['serie']['distance']*this.difficulte) 
-      {
         addscore = 5*bonus;
-      }
       else if (this.val<= this.liste['serie']['distance']*2*this.difficulte)
-      {
         addscore = 4*bonus;
-      }
       else if (this.val<= this.liste['serie']['distance']*3*this.difficulte)
-      {
         addscore = 2*bonus;
-      }
       else
-      {
         addscore = 0;
-      }
 
       this.score = this.score+addscore;
       this.newscore = addscore;
@@ -147,6 +142,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
+      //Save dans localStorage pour résoudre problème F5
       this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
 
     },
@@ -176,6 +172,7 @@ export default {
       else
       {
         this.progress = this.liste['serie']['temps'];
+        //Relancement timer
         this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
         this.nombre = this.nombre+1;
         this.img = this.liste['image'][this.nombre]['url'];
@@ -196,7 +193,7 @@ export default {
       });
 
       L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-          attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+          attribution: 'GeoQuizz',
           minZoom: 1,
           maxZoom: 16
       }).addTo(this.map);
@@ -215,6 +212,7 @@ export default {
         }
       });
 
+      //Lancement timer
       this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
 
     }
@@ -233,9 +231,12 @@ export default {
       this.liste = this.$store.state.partie;
       this.nombre = this.liste['imageNombre'];
       this.score = this.liste['score'];
-      this.progress = Math.round(this.liste['progress']);
-      this.img = this.liste['image'][this.nombre]['url'];
       this.difficulte = this.liste['difficulte'];
+      if(this.liste['progress'] <= 0)
+        this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
+      else
+        this.progress = Math.round(this.liste['progress']);
+      this.img = this.liste['image'][this.nombre]['url'];
       this.ville = this.liste['serie']['ville'];
       this.createMap();
     }
@@ -292,6 +293,7 @@ export default {
       if(this.btn_suiv == true)
         imageNombre = this.nombre+1;
 
+      //Save dans localStorage pour reprendre la partie
       this.$store.commit('setPartie', {'save' : true, 'token' : this.liste['token'], 'score' : this.score, 'serie' : this.liste['serie'], 'image' : this.liste['image'], 'imageNombre' : imageNombre, 'progress' : this.progress, 'pseudo' : this.pseudo, difficulte : this.difficulte });
       this.$router.push({ path: 'lancerPartie'});
 
