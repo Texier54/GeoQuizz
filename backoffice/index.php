@@ -80,12 +80,16 @@ $app->get('/serie/{id}', function ($request, $response, $args) {
     }
 
     /* Recuperer la série et ces photos */
-    $arr2 = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->get();
-    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+    $photos = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->get();
+    $serie = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->first();
+
+    if(!$serie) {
+        return $response->withRedirect($this->router->pathFor('home'), 301);
+    }
 
     return $this->view->render($response, 'serie.html.twig', [
-        'data' => $arr,
-        'photos' => $arr2,
+        'data' => $serie,
+        'photos' => $photos,
         'session' => isset($_SESSION['pseudo'])
     ]);
 })->setName('serie');
@@ -97,7 +101,11 @@ $app->get('/addPhoto/{id}', function ($request, $response, $args) {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
 
-    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+    $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->first();
+
+    if(!$arr) {
+        return $response->withRedirect($this->router->pathFor('home'), 301);
+    }
 
     /* Initialisation du token csrf */
     $nameKey = $this->csrf->getTokenNameKey();
@@ -198,7 +206,12 @@ $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
     /* Supprimer tout les photos de la série avant de supprimer la série en elle même */
     $photo = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->delete();
 
-    $serie = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
+    $serie = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->first();
+
+    if(!$serie) {
+        return $response->withRedirect($this->router->pathFor('home'), 301);
+    }
+
     $serie->delete();
 
     return $response->withRedirect($this->router->pathFor('home'));
@@ -208,7 +221,11 @@ $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
 /* Supprimer une photo */
 $app->get('/deletePhoto/{id}', function ($request, $response, $args) {
 
-    $arr = \geoquizz\common\models\Photo::where('id', '=', $args['id'])->firstOrFail();
+    $arr = \geoquizz\common\models\Photo::where('id', '=', $args['id'])->first();
+
+    if(!$arr) {
+        return $response->withRedirect($this->router->pathFor('home'), 301);
+    }
 
     $arr->delete();
 
@@ -332,7 +349,12 @@ $app->post('/connexion', function ($request, $response, $args) {
     {
         
         try {
-            $user = $arr->where('pseudo', '=', $parsedBody['pseudo'])->firstOrFail();
+            $user = $arr->where('pseudo', '=', $parsedBody['pseudo'])->first();
+
+            if(!$user) {
+                return $response->withRedirect($this->router->pathFor('connexion'), 301);
+            }
+
             if(password_verify($parsedBody['password'], $user->password))
             {
                 $_SESSION['pseudo'] = $user->pseudo;
