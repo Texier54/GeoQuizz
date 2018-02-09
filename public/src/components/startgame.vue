@@ -66,17 +66,21 @@ export default {
 
   mounted() {
 
+    //Recois le choix de la serie
     window.bus.$on('choixSerie',(id) => {
       this.serie = id;
     });
 
+    //Recois le choix de la difficulte
     window.bus.$on('choixDifficulte',(nb) => {
       this.difficulte = nb;
     });
 
+    //Vide le storage si ce n'est pas une vraie save
     if(typeof this.$store.state.partie !== 'undefined' && this.$store.state.partie.save !== true)
       this.$store.commit('setPartie', false);
 
+    //Recois le choix de la serie
     window.axios.get('series').then((response) => {
       this.series = response.data;
       this.serie = this.series[0]['id'];

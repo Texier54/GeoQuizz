@@ -93,6 +93,16 @@ export default {
 
 <style scoped>
 
+body {
+  background-color: #F2F6FA;
+  margin: 0px;
+  padding: 0px;
+  outline: 0px;
+  height: 100%;
+  width: 100%;
+  position: absolute;
+}
+
 .button{
   margin: 10px;
   -webkit-transition-property: color;

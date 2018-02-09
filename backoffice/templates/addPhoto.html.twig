@@ -33,7 +33,7 @@
                   <label for="url">Url</label>
                   <input type="text" class="form-control" id="url" name="url" required>
                   <small id="help" class="form-text text-muted">Enter URL of the image taken from the internet. <br/>
-                    <a href="https://prnt.sc"><button type="button" class="btn btn-default">Upload your own?</button></a>
+                    <a href="https://prnt.sc" target="_blank"><button type="button" class="btn btn-default">Upload your own?</button></a>
                   </small>
               </div>
               <div class="form-group">
@@ -47,6 +47,7 @@
                   <small id="help" class="form-text text-muted">Drag it to the exact position of the photo.</small>
               </div>
 
+                {# Csrf #}
                 <input type="hidden" name="{{ nameKey }}" value="{{ name }}">
                 <input type="hidden" name="{{ valueKey }}" value="{{ value }}">
 

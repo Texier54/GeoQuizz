@@ -15,7 +15,7 @@
 
 	class Controller {
 
-	private $container;
+		private $container;
 
 		public function  __construct(\Slim\Container $c)
 		{
@@ -117,7 +117,7 @@
 				$partie->id_serie = $parsedBody['serie_id'];
 
 				$photo = new photo();
-				$photo = $photo->where('id_serie', '=', $parsedBody['serie_id'])->select('id', 'nom', 'description', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit(10)->get();
+				$photo = $photo->where('id_serie', '=', $parsedBody['serie_id'])->select('id', 'nom', 'description', 'longitude', 'latitude', 'url')->orderByRaw("RAND()")->limit($partie->nb_photos)->get();
 
 				$serie = new serie();
 				$serie = $serie->where('id', '=', $parsedBody['serie_id'])->first();

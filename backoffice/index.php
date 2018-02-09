@@ -3,18 +3,26 @@ require_once __DIR__.'/../src/vendor/autoload.php';
 session_start();
 use \Psr\Http\Message\ServerRequestInterface as Request;
 use \Psr\Http\Message\ResponseInterface as Response;
+
+
 //Slim application instance
 $conf = ['settings' => ['displayErrorDetails' => true]];
 $app = new \Slim\App($conf);
+
+
 //Eloquent ORM settings
 require_once __DIR__.'/db.php';
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use \Respect\Validation\Validator as v;
 use \DavidePastore\Slim\Validation\Validation as Validation;
+
+
 $error = require_once __DIR__.'/../src/conf/error.php';
-// Fetch DI Container
+
+/* Recuperer le container */
 $container = $app->getContainer();
-// Register Twig View helper
+
+/* Initialisation de twig dans le container */
 $container['view'] = function ($c) {
     $view = new \Slim\Views\Twig('./templates', [
         'cache' => false,
@@ -23,27 +31,35 @@ $container['view'] = function ($c) {
     
     // Instantiate and add Slim specific extension
     $basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
+    /* Extension debug pour permettre a twig d'avoir la variable {{ debug() }} */
     $view->addExtension(new Twig_Extension_Debug());
+    /* Extension pour utiliser les routes slim dans les templates twig */
     $view->addExtension(new \Slim\Views\TwigExtension($c['router'], $basePath));
+    /* Extension pour permettre d'utiliser et afficher les messages flash dans twig */
     $view->addExtension(new Knlv\Slim\Views\TwigMessages(
         new Slim\Flash\Messages()
     ));
     return $view;
 };
+
+/* Initialisation du token CSRF dans le container */
 $container['csrf'] = function ($c) {
     return new \Slim\Csrf\Guard;
 };
+
+/* Initialisation des messages flashs dans le container */
 $container['flash'] = function () {
     return new \Slim\Flash\Messages();
 };
-$container['csrf'] = function ($c) {
-    return new \Slim\Csrf\Guard;
-};
+
 /************************************
         Routes
 *************************************/
+
+/* La route de la page d'accueil */
 $app->get('/', function ($request, $response, $args) {
 
+    /* Si l'utilisateur est pas connecté il est rediriger vers la page d'accueil */
     if(!isset($_SESSION['pseudo'])) {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
@@ -56,12 +72,14 @@ $app->get('/', function ($request, $response, $args) {
     ]);
 })->setName('home');
 
+/* La route qui affiche une série donné */
 $app->get('/serie/{id}', function ($request, $response, $args) {
 
     if(!isset($_SESSION['pseudo'])) {
         return $response->withRedirect($this->router->pathFor('connexion'), 301);
     }
 
+    /* Recuperer la série et ces photos */
     $arr2 = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->get();
     $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
 
@@ -72,6 +90,7 @@ $app->get('/serie/{id}', function ($request, $response, $args) {
     ]);
 })->setName('serie');
 
+/* Ajouter une photo à une série */
 $app->get('/addPhoto/{id}', function ($request, $response, $args) {
 
     if(!isset($_SESSION['pseudo'])) {
@@ -80,6 +99,7 @@ $app->get('/addPhoto/{id}', function ($request, $response, $args) {
 
     $arr = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
 
+    /* Initialisation du token csrf */
     $nameKey = $this->csrf->getTokenNameKey();
     $valueKey = $this->csrf->getTokenValueKey();
     $name = $request->getAttribute($nameKey);
@@ -95,6 +115,7 @@ $app->get('/addPhoto/{id}', function ($request, $response, $args) {
     ]);
 })->setName('addPhoto')->add($container->get('csrf'));
 
+/* Ajouter une série */
 $app->get('/addSerie', function ($request, $response, $args) {
 
     if(!isset($_SESSION['pseudo'])) {
@@ -125,8 +146,11 @@ $validateAddSerie = [
     'zoom'    => v::StringType()->intVal()->notEmpty()
 ];
 
+/* Ajouter une série */
 $app->post('/addSerie', function ($request, $response, $args) {
 
+    /* Les messages flash qui sont afficher si le formulaire respecte pas les conditions
+        du validator écritent en haut */
     if ($request->getAttribute( 'has_errors' )) {
 
         $this->flash->addMessage('ville', 'Ville needs to be a string 3 to 30 characters long.');
@@ -168,8 +192,10 @@ $app->post('/addSerie', function ($request, $response, $args) {
     }
 })->add(new Validation($validateAddSerie))->add($container->get('csrf'));
 
+/* Supprimer une série */
 $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
 
+    /* Supprimer tout les photos de la série avant de supprimer la série en elle même */
     $photo = \geoquizz\common\models\Photo::where('id_serie', '=', $args['id'])->delete();
 
     $serie = \geoquizz\common\models\Serie::where('id', '=', $args['id'])->firstOrFail();
@@ -179,6 +205,7 @@ $app->get('/deleteSerie/{id}', function ($request, $response, $args) {
 
 })->setName('deleteSerie');
 
+/* Supprimer une photo */
 $app->get('/deletePhoto/{id}', function ($request, $response, $args) {
 
     $arr = \geoquizz\common\models\Photo::where('id', '=', $args['id'])->firstOrFail();
@@ -198,7 +225,9 @@ $validateAddPhoto = [
     'url'    => v::notEmpty()
 ];
 
+/* Ajouter une photo a une série */
 $app->post('/addPhoto/{id}', function ($request, $response, $args) {
+
     if ($request->getAttribute( 'has_errors' )) {
 
         $this->flash->addMessage('nom', 'Nom needs to be a string 3 to 30 characters long.');
@@ -239,6 +268,7 @@ $app->post('/addPhoto/{id}', function ($request, $response, $args) {
     }
 })->add(new Validation($validateAddPhoto))->add($container->get('csrf'));
 
+/* La page de connexion */
 $app->get('/connexion', function ($request, $response, $args) {
     if(isset($_SESSION['pseudo']))
         return $response->withRedirect($this->router->pathFor('home'), 301);
