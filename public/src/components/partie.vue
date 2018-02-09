@@ -165,7 +165,7 @@ export default {
 
         window.axios.put('partie/'+this.token,{
           score : this.score,
-          etat: 2
+          etat: 4
         }).catch((error) => {
           console.log(error);
         });
