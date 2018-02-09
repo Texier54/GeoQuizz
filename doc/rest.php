@@ -65,7 +65,7 @@ $app->get('/series[/]', function (Request $req, Response $resp, $args) {
  * permet d'accéder à la représentation de la ressource série désignée.
  * Retourne une représentation json de la ressource, incluant son id, son nom, sa description.
  *
- * @apiParam {Number} id Identifiant de la photo
+ * @apiParam (request parameter) {Number} id Identifiant de la photo
  * 
  * @apisuccess (Succès : 200) OK Ressource trouvée
  * 
@@ -83,18 +83,6 @@ $app->get('/series[/]', function (Request $req, Response $resp, $args) {
  *              "temps" : "60",
  *              "zoom" : "13"
  *          }
- *     }
- *
- * @apiError (Erreur : 404) NotFound Pas de série dans la base de données.
- * @apiError (Erreur : 400) MissingParameters Donnéees manquante (id)
- * 
- * @apiErrorExample {json} exemple de réponse en cas d'erreur
- *     HTTP/1.1 404 Not Found
- *
- *     {
- *       "type" : "error',
- *       "error" : 404,
- *       "message" : Ressource non disponible : /serie/2"
  *     }
  */
 
@@ -149,21 +137,21 @@ $app->post('/partie[/]', function (Request $req, Response $resp, $args) {
 
 
 /**
- * @api {put} /partie/{id} modifier une partie
+ * @api {put} /partie/{token} modifier une partie
  * @apiGroup Partie
  * @apiName updatePartie
  * @apiVersion 0.1.0
  *
-
+ *
  *
  * @apiDescription Accès à unes ressource de type partie :
  * Permet de modifier une partie nottament son score ainsi que le pseudo principalement,
  * lorsque le joueur a terminé sa partie.
  *
- * @apiParam {Number} id Identifiant unique de la partie à modifier 
- * @apiParam {Number} status L'état de la partie
- * 
- * @apiParam (request parameter) {String}Token TokenJWT
+ * @apiParam {String} etat L'état de la partie
+ * @apiParam {Number} score Score du joueur
+ *
+ * @apiParam (request parameter) {Token}Token
  * 
  * @apiSuccessExample {json} exemple de réponse en cas de succès
  *     HTTP/1.1 200 OK
@@ -301,8 +289,6 @@ $app->get('/users[/]', function (Request $req, Response $resp, $args) {
  * @apiParam {String} latitude La latitude de la photo 
  * @apiParam {Number} id_serie Id de la série ou la photo est présente
  * 
- * @apiParam (request parameter) {String} Token TokenJWT
- * 
  * 
  * @apiSuccessExample {response} exemple de réponse en cas de succès
  *     HTTP/1.1 201 CREATED
@@ -339,7 +325,7 @@ $app->post('/photo[/]', function (Request $req, Response $resp, $args) {
  * Retourne une représentation json de la ressource, incluant son nom, description,
  * l'url, longitude, latitude et son id de série.
  *
- * @apiParam {Number} id Identifiant unique de la photo
+ * @apiParam (request parameter) {Number} id Identifiant unique de la photo
  *
  *
  * @apiSuccess (Succès : 200) OK Ressource trouvée
