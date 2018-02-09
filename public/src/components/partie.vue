@@ -10,7 +10,7 @@
         <div class="column is-5">
           <img class="img" :src="img" v-show="photo">
           <div>
-            <p class="is-size-5 has-text-weight-semibold has-text-centered">{{ aide }}</p>
+            <p class="is-size-5 has-text-weight-semibold has-text-centered is-capitalized">{{ aide }}</p>
           </div>
           <div class="is-size-3 has-text-centered has-text-weight-bold">
             <p class="is-uppercase">{{ ville }}</p>
@@ -157,6 +157,7 @@ export default {
       {
         this.end = true;
         this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score, token : this.token, pseudo : this.pseudo};
+        console.log(this.partie.pseudo);
         this.$store.commit('setPartie', false);
         clearInterval(this.intervalProgress);
         this.photo = false;
@@ -164,7 +165,7 @@ export default {
 
         window.axios.put('partie/'+this.token,{
           score : this.score,
-          etat: 2
+          etat: 4
         }).catch((error) => {
           console.log(error);
         });
@@ -184,7 +185,6 @@ export default {
     createMap() {
 
       this.token = this.liste['token'];
-      this.pseudo = this.liste['pseudo'];
       this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
 
       this.map = L.map('map', {
@@ -238,6 +238,7 @@ export default {
         this.progress = Math.round(this.liste['progress']);
       this.img = this.liste['image'][this.nombre]['url'];
       this.ville = this.liste['serie']['ville'];
+      this.pseudo = this.liste['pseudo'];
       this.createMap();
     }
     else
@@ -256,12 +257,11 @@ export default {
         this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
         this.img = this.liste['image'][0]['url'];
         this.ville = this.liste['serie']['ville'];
+        this.pseudo = this.$route.params.pseudo;
         this.createMap();
 
       }).catch((error) => {
-
         console.log(error);
-
       });
     }
 

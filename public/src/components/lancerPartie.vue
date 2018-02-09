@@ -49,7 +49,7 @@
       <div class="end"></div>
       <tabScore v-for="tableau in tableaux" :tableau="tableau"></tabScore>
     </section>
-    <startgame :lancer="lancer"></startgame>
+    <startgame :lancer="lancer" v-show="lancer"></startgame>
   </div>
 </template>
 
@@ -86,6 +86,9 @@ export default {
       console.log(error);
     });
 
+    window.bus.$on('fermerStartGame',() => {
+      this.lancer = false;
+    });
 
   }
 }
