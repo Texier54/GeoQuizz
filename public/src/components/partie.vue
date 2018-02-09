@@ -171,7 +171,7 @@ export default {
       }
       else
       {
-        this.progress = this.liste['serie']['temps'];
+        this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
         //Relancement timer
         this.intervalProgress = setInterval(() => { this.updateProgress() }, 1000);
         this.nombre = this.nombre+1;
