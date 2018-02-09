@@ -21,12 +21,12 @@ Ces instructions vous permettront d'obtenir une copie du projet opérationnel su
 
 ```
 * Clone le depot git — git clone https://github.com/Texier54/GeoQuizz
-* Importation de la BDD /sql/geoquizz.sql
-* Remplissage de la BDD /sql/geoquizz_data.sql
 * Configuration du fichier de la BDD ./src/conf/geoquizz.db.conf.ini
 * Modifier le ficher /etc/hosts an y ajoutant : 127.0.0.1 api.geoquizz.local backoffice.local
 * Faire un : docker-compose up
 * Suivi d'un : docker-compose start
+* Importation de la BDD /sql/geoquizz.sql
+* Remplissage de la BDD /sql/geoquizz_data.sql
 * Dans ./src composer install
 * Dans ./public npm install
 * Dans ./public npm run dev
