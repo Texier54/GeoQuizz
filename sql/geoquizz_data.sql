@@ -1,6 +1,6 @@
 INSERT INTO `serie` (`id`, `ville`, `latitude`, `longitude`, `distance`, `temps`, `zoom`) VALUES
-(NULL, 'nancy', '48.6833', '6.222222', "30", '60', '16'),
-(NULL, 'paris', '48.866667', '2.333333', "50", '60', '18');
+(NULL, 'nancy', '48.6833', '6.222222', "80", '60', '16'),
+(NULL, 'paris', '48.866667', '2.333333', "100", '120', '18');
 
 
 INSERT INTO `partie` (`id`, `token`, `nb_photos`, `status`, `score`, `joueur`, `difficulte`, `created_at`, `updated_at`, `id_serie`) VALUES
