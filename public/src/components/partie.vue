@@ -63,7 +63,6 @@ export default {
       map: '', //stock la map
       temp: '', //stock les coords d'un marker
       aide: '',
-      description: '',
     }
   },
 
@@ -74,32 +73,8 @@ export default {
     *         Functions             *
     ********************************/
 
-    deg2rad(x){
-      return Math.PI*x/180;
-    },
-
-    precisionRound(number, precision) {
-      let factor = Math.pow(10, precision);
-      return Math.round(number * factor) / factor;
-    },
-
-    get_distance_m($lat1, $lng1, $lat2, $lng2) {
-      let $earth_radius = 6378137;   // Terre = sphère de 6378km de rayon
-      let $rlo1 = this.deg2rad($lng1);    // CONVERSION
-      let $rla1 = this.deg2rad($lat1);
-      let $rlo2 = this.deg2rad($lng2);
-      let $rla2 = this.deg2rad($lat2);
-      let $dlo = ($rlo2 - $rlo1) / 2;
-      let $dla = ($rla2 - $rla1) / 2;
-      let $a = (Math.sin($dla) * Math.sin($dla)) + Math.cos($rla1) * Math.cos($rla2) * (Math.sin($dlo) * Math.sin($dlo
-    ));
-      let  $d = 2 * Math.atan2(Math.sqrt($a), Math.sqrt(1 - $a));
-      return ($earth_radius * $d);
-    },
-
     updateProgress() {
       this.progress = this.progress-1;
-      console.log(this.progress);
       if(this.progress <= 0)
       {
         clearInterval(this.intervalProgress);
@@ -118,7 +93,6 @@ export default {
       this.btn_val = false;
       this.btn_suiv = true;
       this.aide = this.liste['image'][this.nombre]['nom'];
-      this.description = this.liste['image'][this.nombre]['description'];
       let greenIcon = new L.Icon({
         iconUrl: 'https://cdn.rawgit.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
@@ -179,7 +153,6 @@ export default {
 
     suivant() {
       this.aide = '';
-      this.description = '';
       this.map.removeLayer(this.marker);
       if(this.markerResult !== '')
         this.map.removeLayer(this.markerResult);
@@ -235,7 +208,8 @@ export default {
           if(this.marker != '')
             this.map.removeLayer(this.marker);
 
-          this.val = this.precisionRound(this.get_distance_m(this.temp.lat, this.temp.lng ,this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']), 1);
+          //Calcul distance
+          this.val = Math.round(L.latLng([this.temp.lat, this.temp.lng]).distanceTo([this.liste['image'][this.nombre]['latitude'], this.liste['image'][this.nombre]['longitude']]));
           this.btn_val = true;
           this.marker = L.marker([this.temp.lat, this.temp.lng]).addTo(this.map);
         }
@@ -262,7 +236,7 @@ export default {
       this.progress = Math.round(this.liste['progress']);
       this.img = this.liste['image'][this.nombre]['url'];
       this.difficulte = this.liste['difficulte'];
-      this.ville = this.liste['liste']['serie']['ville'];
+      this.ville = this.liste['serie']['ville'];
       this.createMap();
     }
     else

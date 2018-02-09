@@ -15,7 +15,7 @@
 
 	class Controller {
 
-	private $container;
+		private $container;
 
 		public function  __construct(\Slim\Container $c)
 		{

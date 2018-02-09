@@ -12,5 +12,9 @@ changer home accueil (backoffice)*
 readme (trello)*
 api doc
 commentaire backoffice
-grille dans popup
-style aide partie
+grille dans popup*
+style aide partie*
+
+
+Jeandudu jd54
+MichhelEv me54
