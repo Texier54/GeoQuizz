@@ -4,19 +4,21 @@
       <a href="/" class="navbar-item">
         <b class="is-size-2"><i class="marker fas fa-map-marker-alt"></i>GeoQuizz</b>
       </a>
-      <button class="button navbar-burger btnreduc" data-target="navMenu">
+      <button v-show="this.$route.path ==='/partie'" class="button navbar-burger btnreduc" data-target="navMenu">
+        <span></span>
+        <span></span>
         <span></span>
       </button>   
     </div>
     <div class="navbar-menu" id="navMenu">
-      <button v-show="this.$route.path ==='/partie' " @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5"><i class="marker fas fa-pause-circle "></i>
+      <button v-show="this.$route.path ==='/partie'" @click="suspendre" class="navbar-end nav btn button is-warning is-medium is-size-5"><i class="marker fas fa-pause-circle "></i>
         Susprendre partie
       </button>
-      <button v-show="this.$route.path ==='/partie' " @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5"><i class="marker fas fa-sign-out-alt "></i>
+      <button v-show="this.$route.path ==='/partie'" @click="quitter" class="navbar-end nav btn button is-danger is-medium is-size-5"><i class="marker fas fa-sign-out-alt "></i>
         Quitter la partie
       </button>
     </div>
-  </nav>
+</nav>
 </template>
 
 <script>
@@ -69,7 +71,6 @@ export default {
 <style scoped>
 
 .btn{
-  margin-top: 12px;   /* A RENDRE PLUS PROPRE*/
   margin-right: 10px; /* A RENDRE PLUS PROPRE*/
   -webkit-transition-property: color;
   -webkit-transition-duration: 0.5s;
@@ -77,6 +78,8 @@ export default {
   -moz-transition-duration: 0.5s;
   transition-property: color;
   transition-duration: 0.5s;
+  margin-bottom: auto;
+  margin-top: auto;
 }
 
 .btn:hover{
@@ -95,13 +98,18 @@ export default {
   color:#FFFFFF;
 }
 
-#navMenu{
-  background-color: #363636; /* A ENLEVER */
-}
-
 .marker{
   margin-top: 5px;
   margin-right: 10px;
+}
+
+.navbar-burger {
+  margin-bottom: auto;
+  margin-top: auto;
+}
+
+.is-active .btn {
+  margin-left: 10px;
 }
 
 </style>
