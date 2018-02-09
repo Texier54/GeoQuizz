@@ -133,6 +133,55 @@
     "groupTitle": "Partie"
   },
   {
+    "type": "get",
+    "url": "/partie/",
+    "title": "Obtenir le tableau des scores",
+    "group": "Partie",
+    "name": "getTabScore",
+    "version": "0.1.0",
+    "description": "<p>Accès à une ressource de type partie : Tableau qui affiche le score, le nombre de photos, la série et sa difficulté, le status de la partie ainsi que le pseudo du joueur. Enfin, la date de la création de la partie</p>",
+    "success": {
+      "fields": {
+        "Succès : 200": [
+          {
+            "group": "Succès : 200",
+            "optional": false,
+            "field": "OK",
+            "description": "<p>Ressource trouvée</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas de succès",
+          "content": "HTTP/1.1 200 OK\n\n{\n   \"type\" : \"array\",\n   \tpartie : {\n         \"nb_photos\"  : \"10\",\n         \"status\" : \"2\",\n         \"score\" : \"120\",\n         \"joueur\" : \"Jeandudu\",\n         \"id_serie\" : \"1\",\n         \"difficulté\" : \"1\",\n         \"created_at\" : \"2018-05-02 10:20:21\"\n   \t}\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "error": {
+      "fields": {
+        "Erreur : 404": [
+          {
+            "group": "Erreur : 404",
+            "optional": false,
+            "field": "NotFound",
+            "description": "<p>Ressource inconnue.</p>"
+          }
+        ]
+      },
+      "examples": [
+        {
+          "title": "exemple de réponse en cas d'erreur",
+          "content": "HTTP/1.1 404 Not Found\n\n{\n  \"type\" : \"error\",\n  \"error\" : 404,\n  \"message\" : \"ressource non disponible, aucune partie de créée.\"\n}",
+          "type": "json"
+        }
+      ]
+    },
+    "filename": "./rest.php",
+    "groupTitle": "Partie"
+  },
+  {
     "type": "put",
     "url": "/partie/{id}",
     "title": "modifier une partie",

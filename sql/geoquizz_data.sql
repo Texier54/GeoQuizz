@@ -1,6 +1,6 @@
 INSERT INTO `serie` (`id`, `ville`, `latitude`, `longitude`, `distance`, `temps`, `zoom`) VALUES
-(NULL, 'nancy', '48.6833', '6.222222', "distance", 'temps', 'zoom'),
-(NULL, 'paris', '48.866667', '2.333333', "distance", 'temps', 'zoom');
+(NULL, 'nancy', '48.6833', '6.222222', "30", '60', '16'),
+(NULL, 'paris', '48.866667', '2.333333', "50", '60', '18');
 
 
 INSERT INTO `partie` (`id`, `token`, `nb_photos`, `status`, `score`, `joueur`, `difficulte`, `created_at`, `updated_at`, `id_serie`) VALUES
@@ -12,7 +12,7 @@ INSERT INTO `utilisateur` (`id`, `nom`, `prenom`, `mail`, `pseudo`, `password`) 
 (NULL, 'Michel', 'Evrard', 'michel.evrard@gmail.com', "MichelEv", '$2y$10$hSbGNuZkCs7EwgjGqJof8.8GqIQewgcsozPhJOZw3MTbnIeb.a4hi');
 
 
-INSERT INTO `photo` (`id`, `nom`, `description`, `url`, `longitude`, `latitude`, `id_serie`) VALUES
+INSERT INTO `photo` (`id`, `nom`, `description`, `url`, `latitude`, `longitude`, `id_serie`) VALUES
 (NULL, 'parcPepiniere', 'Parc de la pépinière avec une aire de jeu', 'http://image-photos.linternaute.com/image_photo/450/2976037860/571681.jpg', "48.698249", '6.184871', 1),
 (NULL, 'cathedraleNDA', 'Cathédrale Notre-Dame-de-lAnnonciation de Nancy ', 'https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/Nancy_Cathedral_BW_2015-07-18_16-31-28.jpg/280px-Nancy_Cathedral_BW_2015-07-18_16-31-28.jpg', "48.691177", '6.186078', 1),
 (NULL, 'museeLorrain', 'Musée lorrain, est le musée historique de la région Lorraine, lun des trois grands musées de la ville de Nancy', 'https://www.musee-lorrain.nancy.fr/fichier/media_image/7659/image_src_6.jpg', "48.697281", '6.179390', 1),
@@ -34,7 +34,7 @@ INSERT INTO `photo` (`id`, `nom`, `description`, `url`, `longitude`, `latitude`,
 (NULL, 'porteSainteCath', 'La porte Sainte-Catherine est une porte de Nancy, érigée au XVIIIème siècle.', 'https://upload.wikimedia.org/wikipedia/commons/7/79/Nancy_-_porte_Sainte-Catherine.jpg', "48.695595", '6.189907', 1),
 (NULL, 'chateauxMontaigu', 'Le château de Montaigu est un château situé sur la commune française de Laneuveville-devant-Nancy près de Nancy.', 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/55/F54_Jarville_ch%C3%A2teau-de-Montaigu.JPG/280px-F54_Jarville_ch%C3%A2teau-de-Montaigu.jpg', "48.664636", '6.209929', 1);
 
-INSERT INTO `photo` (`id`, `nom`, `description`, `url`, `longitude`, `latitude`, `id_serie`) VALUES
+INSERT INTO `photo` (`id`, `nom`, `description`, `url`, `latitude`, `longitude`, `id_serie`) VALUES
 (NULL, 'tourEiffel', 'La tour Eiffel est une tour de fer puddlé de 324 mètres de hauteur située à Paris', 'https://www.parisinfo.com/var/otcp/sites/images/media/1.-photos/02.-sites-culturels-630-x-405/tour-eiffel-trocadero-630x405-c-thinkstock/37221-1-fre-FR/Tour-Eiffel-Trocadero-630x405-C-Thinkstock.jpg', "48.858262", '2.294622', 2),
 (NULL, 'museeDuLouvre', 'Le musée du Louvre est le plus grand musée dart et dantiquités au monde, situé au centre de Paris dans le palais du Louvre', 'https://fr.petitsfrenchies.com/wp-content/uploads/2017/01/museedulouvre-1460x650.jpg', "48.860555", '2.337605', 2),
 (NULL, 'CathédraleNDP', 'La cathédrale Notre-Dame de Paris, en forme courte Notre-Dame, est la cathédrale de l’archidiocèse de Paris', 'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c0/Notre_Dame_de_Paris_DSC_0846w.jpg/280px-Notre_Dame_de_Paris_DSC_0846w.jpg', "48.852874", '2.350155', 2),
