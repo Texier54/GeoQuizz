@@ -31,11 +31,11 @@ Ces instructions vous permettront d'obtenir une copie du projet opérationnel su
 * Dans ./public npm install
 * Dans ./public npm run dev
 ```
-* Pour acceder au backoffice il faudra aller au lien : backoffice.local:10081
+* Pour acceder au backoffice il faudra aller au lien : **backoffice.local:10081**
 
-* Pour acceder au jeu il faudra aller au lien localhost:XXXX, dependant de ce que votre npm run dev vous dis, normalement c'est le port 8080
+* Pour acceder au jeu il faudra aller au lien **localhost:XXXX**, dependant de ce que votre npm run dev vous dis, normalement c'est le port **8080**
 
-* La BDD Adminer se trouve à l'addresse api.geoquizz.local:8090
+* La BDD Adminer se trouve à l'addresse **api.geoquizz.local:8090**
 
 ## Fait avec
 
