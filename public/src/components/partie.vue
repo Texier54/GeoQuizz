@@ -157,6 +157,7 @@ export default {
       {
         this.end = true;
         this.partie = {'ville' : this.liste['serie']['ville'], 'score' : this.score, token : this.token, pseudo : this.pseudo};
+        console.log(this.partie.pseudo);
         this.$store.commit('setPartie', false);
         clearInterval(this.intervalProgress);
         this.photo = false;
@@ -184,7 +185,6 @@ export default {
     createMap() {
 
       this.token = this.liste['token'];
-      this.pseudo = this.liste['pseudo'];
       this.tempsMax = Math.round(this.liste['serie']['temps']*this.difficulte);
 
       this.map = L.map('map', {
@@ -238,6 +238,7 @@ export default {
         this.progress = Math.round(this.liste['progress']);
       this.img = this.liste['image'][this.nombre]['url'];
       this.ville = this.liste['serie']['ville'];
+      this.pseudo = this.liste['pseudo'];
       this.createMap();
     }
     else
@@ -256,12 +257,11 @@ export default {
         this.progress = Math.round(this.liste['serie']['temps']*this.difficulte);
         this.img = this.liste['image'][0]['url'];
         this.ville = this.liste['serie']['ville'];
+        this.pseudo = this.$route.params.pseudo;
         this.createMap();
 
       }).catch((error) => {
-
         console.log(error);
-
       });
     }
 
