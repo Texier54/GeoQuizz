@@ -8,6 +8,8 @@ Trello : https://trello.com/b/uOqYzi1V/geoquizz
 
 Ces instructions vous permettront d'obtenir une copie du projet opérationnel sur votre machine locale à des fins de développement et de test. Voir déploiement pour les notes sur la façon de déployer le projet sur un système actif.
 
+![Alt text](Screen-Game.png)
+
 ### Prérequis
 ```
 * Web server avec un URL rewriting
