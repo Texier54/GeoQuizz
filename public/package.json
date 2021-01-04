@@ -10,7 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "axios": "^0.17.1",
+    "axios": "^0.21.1",
     "js-md5": "^0.7.3",
     "vue": "^2.5.2",
     "vue-radial-progress": "^0.2.10",
